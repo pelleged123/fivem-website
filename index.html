@@ -739,14 +739,13 @@
 
     <script>
         const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1431244475891581058/mKtDS-S-YbEeX6kQyhVfqOPo46492eTV-iMeMdiErMQTH2OtyhRsIZQuGfV4yn7W77wM';
-        const API_URL = 'https://fivem-website-production.up.railway.app/'; // F.eks: https://fivem-backend-production.up.railway.app
+        const API_URL = 'https://fivem-website-production.up.railway.app';
         
         let isAdmin = false;
         let sessionToken = null;
         let currentUser = null;
         let applications = JSON.parse(localStorage.getItem('fivem_applications') || '[]');
 
-        // Check for OAuth callback
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
@@ -780,7 +779,6 @@
                 
                 window.history.replaceState({}, document.title, window.location.pathname);
             } else {
-                // Check existing session
                 try {
                     const savedToken = localStorage.getItem('discord_session');
                     if (savedToken) {
@@ -793,9 +791,8 @@
             }
         });
         
-        // Verify session with backend
         async function verifySession() {
-            if (!sessionToken || API_URL === 'https://fivem-website-production.up.railway.app/') return;
+            if (!sessionToken) return;
             
             try {
                 const response = await fetch(`${API_URL}/api/verify`, {
@@ -822,7 +819,6 @@
             }
         }
         
-        // Update admin UI
         function updateAdminUI() {
             const adminBtn = document.querySelector('.admin-toggle');
             const adminNav = document.querySelector('.admin-nav');
@@ -843,7 +839,6 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             
-            // Find correct button to activate
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => {
                 const text = btn.textContent.toLowerCase();
@@ -867,12 +862,6 @@
 
         async function toggleAdmin() {
             if (!isAdmin) {
-                // Start Discord OAuth flow
-                if (API_URL === 'https://fivem-website-production.up.railway.app/') {
-                    alert('⚠️ Backend URL er ikke konfigureret! Tilføj din Railway URL i koden.');
-                    return;
-                }
-                
                 try {
                     const response = await fetch(`${API_URL}/api/auth/discord`);
                     const data = await response.json();
@@ -883,10 +872,9 @@
                     }
                 } catch (error) {
                     console.error('Failed to start OAuth:', error);
-                    alert('❌ Kunne ikke forbinde til backend serveren. Er den kørende?');
+                    alert('❌ Kunne ikke forbinde til backend serveren.');
                 }
             } else {
-                // Logout
                 try {
                     await fetch(`${API_URL}/api/logout`, {
                         method: 'POST',
@@ -945,7 +933,7 @@
         }
 
         async function sendDiscordNotification(app, status) {
-            if (DISCORD_WEBHOOK_URL === 'https://discord.com/api/webhooks/1431244475891581058/mKtDS-S-YbEeX6kQyhVfqOPo46492eTV-iMeMdiErMQTH2OtyhRsIZQuGfV4yn7W77wM') return;
+            if (!DISCORD_WEBHOOK_URL) return;
             const embed = {
                 title: status === 'approved' ? '✅ Ansøgning Godkendt' : '❌ Ansøgning Afvist',
                 color: status === 'approved' ? 3066993 : 15158332,
