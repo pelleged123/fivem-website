@@ -12,12 +12,12 @@ app.use(cors());
 app.use(express.json());
 
 // Hent fra Railway environment variables
-const DISCORD_CLIENT_ID = '1432421740713345025'; // Dit Client ID fra Discord
-const DISCORD_CLIENT_SECRET = 'QuhbDh5ROWAMKpQDtHvo-OyKa-7ZstfN'; // Dit Client Secret
-const DISCORD_REDIRECT_URI = 'https://fivem-website-production.up.railway.app/';
-const FRONTEND_URL = 'https://vernex12.netlify.app'; // Dit Netlify link
-const REQUIRED_GUILD_ID = '1421237887210623100'; // Dit Discord Server ID
-const ADMIN_ROLE_ID = '1421472998027821137'; // Din Admin Rolle ID
+const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
+const DISCORD_REDIRECT_URI = process.env.DISCORD_REDIRECT_URI;
+const FRONTEND_URL = process.env.FRONTEND_URL;
+const REQUIRED_GUILD_ID = process.env.REQUIRED_GUILD_ID;
+const ADMIN_ROLE_ID = process.env.ADMIN_ROLE_ID;
 
 const sessions = new Map();
 
@@ -135,4 +135,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Backend running on port ${PORT}`);
 });
-
