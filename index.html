@@ -24,7 +24,6 @@
             padding: 0 20px;
         }
 
-        /* Header */
         header {
             background: rgba(30, 30, 46, 0.95);
             border-bottom: 2px solid #2563eb;
@@ -115,7 +114,6 @@
             background: #10b981;
         }
 
-        /* Main Content */
         main {
             padding: 60px 0;
             min-height: calc(100vh - 200px);
@@ -135,7 +133,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Home Page */
         .hero {
             text-align: center;
             margin-bottom: 60px;
@@ -146,6 +143,7 @@
             background: linear-gradient(135deg, #60a5fa, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 20px;
         }
 
@@ -251,7 +249,6 @@
             background: rgba(0, 0, 0, 0.5);
         }
 
-        /* Rules Page */
         .page-header {
             text-align: center;
             margin-bottom: 40px;
@@ -316,7 +313,6 @@
             color: #fbbf24;
         }
 
-        /* Application Form */
         .form-container {
             max-width: 700px;
             margin: 0 auto;
@@ -381,7 +377,6 @@
             transform: scale(1.02);
         }
 
-        /* Admin Panel */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -408,16 +403,12 @@
         .stat-approved { background: #10b981; }
         .stat-rejected { background: #ef4444; }
 
-        .applications-grid {
-            display: grid;
-            gap: 25px;
-        }
-
         .application-card {
             background: rgba(30, 30, 46, 0.8);
             border: 2px solid #374151;
             border-radius: 12px;
             padding: 25px;
+            margin-bottom: 25px;
         }
 
         .app-header {
@@ -502,10 +493,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
         .btn-approve {
@@ -544,7 +531,6 @@
             color: #9ca3af;
         }
 
-        /* Footer */
         footer {
             background: rgba(30, 30, 46, 0.95);
             border-top: 2px solid #374151;
@@ -553,36 +539,17 @@
             color: #9ca3af;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            .hero h2 {
-                font-size: 32px;
-            }
-
-            .features {
-                grid-template-columns: 1fr;
-            }
-
-            .form-container {
-                padding: 25px;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            nav {
-                width: 100%;
-            }
-
-            .nav-btn {
-                flex: 1;
-            }
+            .hero h2 { font-size: 32px; }
+            .features { grid-template-columns: 1fr; }
+            .form-container { padding: 25px; }
+            .action-buttons { flex-direction: column; }
+            nav { width: 100%; }
+            .nav-btn { flex: 1; }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -604,16 +571,13 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main>
         <div class="container">
-            <!-- Home Page -->
             <div id="home" class="page active">
                 <div class="hero">
                     <h2>Velkommen til vores FiveM Server</h2>
                     <p>En seriøs roleplay server med fokus på kvalitet og god stemning</p>
                 </div>
-
                 <div class="features">
                     <div class="feature-card">
                         <div class="feature-icon" style="background: #2563eb;">👥</div>
@@ -631,7 +595,6 @@
                         <p>Vores staff team er altid klar til at hjælpe og sikre fair spil.</p>
                     </div>
                 </div>
-
                 <div class="cta">
                     <h3>Klar til at starte?</h3>
                     <p>Læs vores regler og ansøg om at blive en del af vores community!</p>
@@ -642,13 +605,11 @@
                 </div>
             </div>
 
-            <!-- Rules Page -->
             <div id="rules" class="page">
                 <div class="page-header">
                     <h2>Server Regler</h2>
                     <p>Læs og forstå reglerne før du starter</p>
                 </div>
-
                 <div class="rules-grid">
                     <div class="rule-card">
                         <div class="rule-number">1</div>
@@ -707,35 +668,32 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="warning-box">
                     <strong>⚠️ Vigtigt:</strong> Brud på reglerne kan føre til advarsler, kicks eller permanent ban alt efter sværhedsgraden.
                 </div>
             </div>
 
-            <!-- Application Page -->
             <div id="apply" class="page">
                 <div class="page-header">
                     <h2>Job Ansøgning</h2>
                     <p>Udfyld formularen for at ansøge om et job</p>
                 </div>
-
                 <div class="form-container">
                     <div class="form-group">
                         <label>Fulde Navn *</label>
-                        <input type="text" id="name" placeholder="Dit fulde navn" required>
+                        <input type="text" id="name" placeholder="Dit fulde navn">
                     </div>
                     <div class="form-group">
                         <label>Discord Tag *</label>
-                        <input type="text" id="discord" placeholder="brugernavn#1234" required>
+                        <input type="text" id="discord" placeholder="brugernavn#1234">
                     </div>
                     <div class="form-group">
                         <label>Alder *</label>
-                        <input type="number" id="age" min="16" placeholder="Din alder" required>
+                        <input type="number" id="age" min="16" placeholder="Din alder">
                     </div>
                     <div class="form-group">
                         <label>Hvilket job ansøger du til? *</label>
-                        <select id="job" required>
+                        <select id="job">
                             <option value="">Vælg et job</option>
                             <option value="Politi">Politi</option>
                             <option value="EMS/Læge">EMS/Læge</option>
@@ -749,17 +707,16 @@
                     </div>
                     <div class="form-group">
                         <label>Tidligere Erfaring *</label>
-                        <textarea id="experience" placeholder="Fortæl om din tidligere erfaring med roleplay og FiveM" required></textarea>
+                        <textarea id="experience" placeholder="Fortæl om din tidligere erfaring med roleplay og FiveM"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Hvorfor vil du have dette job? *</label>
-                        <textarea id="why" placeholder="Beskriv hvorfor du mener du er den rette til jobbet" required style="min-height: 120px;"></textarea>
+                        <textarea id="why" placeholder="Beskriv hvorfor du mener du er den rette til jobbet" style="min-height: 120px;"></textarea>
                     </div>
                     <button class="submit-btn" onclick="submitApplication()">Send Ansøgning</button>
                 </div>
             </div>
 
-            <!-- Admin Page -->
             <div id="admin" class="page">
                 <div class="admin-header">
                     <h2>Admin Panel</h2>
@@ -774,7 +731,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <p>&copy; 2024 FiveM Server. Alle rettigheder forbeholdes.</p>
@@ -782,26 +738,14 @@
     </footer>
 
     <script>
-        // Discord Webhook URL - INDSÆT DIN WEBHOOK HER!
-        const DISCORD_WEBHOOK_URL = 'YOUR_DISCORD_WEBHOOK_URL_HERE';
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1431244475891581058/mKtDS-S-YbEeX6kQyhVfqOPo46492eTV-iMeMdiErMQTH2OtyhRsIZQuGfV4yn7W77wM';
+        const API_URL = 'https://fivem-website-production.up.railway.app/'; // F.eks: https://fivem-backend-production.up.railway.app
         
-        // Backend API URL
-       const API_URL = 'https://din-backend.up.railway.app';
-
-        // State
         let isAdmin = false;
         let sessionToken = null;
         let currentUser = null;
-        let applications = [];
+        let applications = JSON.parse(localStorage.getItem('fivem_applications') || '[]');
 
-        // Initialize applications from localStorage with error handling
-        try {
-            applications = JSON.parse(localStorage.getItem('fivem_applications') || '[]');
-        } catch (e) {
-            console.log('localStorage not available, using memory storage');
-            applications = [];
-        }
-        
         // Check for OAuth callback
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -810,7 +754,10 @@
             const error = urlParams.get('error');
             
             if (error) {
-                alert('❌ Discord login fejlede. Prøv igen.');
+                let errorMsg = '❌ Discord login fejlede.';
+                if (error === 'not_in_server') errorMsg = '❌ Du er ikke medlem af Discord serveren!';
+                if (error === 'no_permission') errorMsg = '❌ Du har ikke admin rettigheder på Discord serveren!';
+                alert(errorMsg);
                 window.history.replaceState({}, document.title, window.location.pathname);
                 return;
             }
@@ -828,8 +775,7 @@
                     await verifySession();
                     updateAdminUI();
                     alert('✅ Du er nu logget ind som admin!');
-                } else {
-                    alert('❌ Du har ikke admin rettigheder på Discord serveren.');
+                    showPage('admin');
                 }
                 
                 window.history.replaceState({}, document.title, window.location.pathname);
@@ -849,7 +795,7 @@
         
         // Verify session with backend
         async function verifySession() {
-            if (!sessionToken) return;
+            if (!sessionToken || API_URL === 'https://fivem-website-production.up.railway.app/') return;
             
             try {
                 const response = await fetch(`${API_URL}/api/verify`, {
@@ -892,30 +838,52 @@
             }
         }
 
-        // Navigation
         function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            event.target.classList.add('active');
-
+            
+            // Find correct button to activate
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                const text = btn.textContent.toLowerCase();
+                if ((pageId === 'home' && text.includes('hjem')) ||
+                    (pageId === 'rules' && text.includes('regler')) ||
+                    (pageId === 'apply' && text.includes('ansøg')) ||
+                    (pageId === 'admin' && text.includes('admin'))) {
+                    btn.classList.add('active');
+                }
+            });
+            
             if (pageId === 'admin') {
+                if (!isAdmin) {
+                    alert('Du skal være logget ind som admin!');
+                    showPage('home');
+                    return;
+                }
                 renderApplications();
             }
         }
 
-        // Admin Toggle with Discord OAuth
         async function toggleAdmin() {
             if (!isAdmin) {
                 // Start Discord OAuth flow
+                if (API_URL === 'https://fivem-website-production.up.railway.app/') {
+                    alert('⚠️ Backend URL er ikke konfigureret! Tilføj din Railway URL i koden.');
+                    return;
+                }
+                
                 try {
                     const response = await fetch(`${API_URL}/api/auth/discord`);
                     const data = await response.json();
-                    window.location.href = data.url;
+                    if (data.url) {
+                        window.location.href = data.url;
+                    } else {
+                        alert('❌ Kunne ikke starte Discord login.');
+                    }
                 } catch (error) {
                     console.error('Failed to start OAuth:', error);
-                    alert('❌ Kunne ikke starte Discord login. Er backend serveren kørende?');
+                    alert('❌ Kunne ikke forbinde til backend serveren. Er den kørende?');
                 }
             } else {
                 // Logout
@@ -942,40 +910,29 @@
             }
         }
 
-        // Submit Application
         function submitApplication() {
-            const name = document.getElementById('name').value;
-            const discord = document.getElementById('discord').value;
+            const name = document.getElementById('name').value.trim();
+            const discord = document.getElementById('discord').value.trim();
             const age = document.getElementById('age').value;
             const job = document.getElementById('job').value;
-            const experience = document.getElementById('experience').value;
-            const why = document.getElementById('why').value;
+            const experience = document.getElementById('experience').value.trim();
+            const why = document.getElementById('why').value.trim();
 
             if (!name || !discord || !age || !job || !experience || !why) {
                 alert('Udfyld venligst alle felter!');
                 return;
             }
 
-            const application = {
+            const app = {
                 id: Date.now(),
-                name,
-                discord,
-                age,
-                job,
-                experience,
-                why,
+                name, discord, age, job, experience, why,
                 status: 'pending',
                 timestamp: new Date().toISOString()
             };
 
-            applications.push(application);
-            try {
-                localStorage.setItem('fivem_applications', JSON.stringify(applications));
-            } catch (e) {
-                console.log('localStorage not available');
-            }
+            applications.push(app);
+            localStorage.setItem('fivem_applications', JSON.stringify(applications));
 
-            // Clear form
             document.getElementById('name').value = '';
             document.getElementById('discord').value = '';
             document.getElementById('age').value = '';
@@ -987,53 +944,38 @@
             showPage('home');
         }
 
-        // Send Discord Notification
-        async function sendDiscordNotification(application, status) {
-            if (DISCORD_WEBHOOK_URL === 'YOUR_DISCORD_WEBHOOK_URL_HERE') {
-                console.log('Discord webhook ikke konfigureret');
-                return;
-            }
-
+        async function sendDiscordNotification(app, status) {
+            if (DISCORD_WEBHOOK_URL === 'https://discord.com/api/webhooks/1431244475891581058/mKtDS-S-YbEeX6kQyhVfqOPo46492eTV-iMeMdiErMQTH2OtyhRsIZQuGfV4yn7W77wM') return;
             const embed = {
                 title: status === 'approved' ? '✅ Ansøgning Godkendt' : '❌ Ansøgning Afvist',
                 color: status === 'approved' ? 3066993 : 15158332,
                 fields: [
-                    { name: 'Navn', value: application.name, inline: true },
-                    { name: 'Discord', value: application.discord, inline: true },
-                    { name: 'Job', value: application.job, inline: true },
-                    { name: 'Alder', value: application.age.toString(), inline: true },
-                    { name: 'Tidspunkt', value: new Date().toLocaleString('da-DK'), inline: false }
+                    { name: 'Navn', value: app.name, inline: true },
+                    { name: 'Discord', value: app.discord, inline: true },
+                    { name: 'Job', value: app.job, inline: true },
+                    { name: 'Alder', value: app.age.toString(), inline: true }
                 ],
                 timestamp: new Date().toISOString()
             };
-
             try {
                 await fetch(DISCORD_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ embeds: [embed] })
                 });
-            } catch (error) {
-                console.error('Fejl ved afsendelse til Discord:', error);
-            }
+            } catch (e) { console.error(e); }
         }
 
-        // Handle Application Action
         function handleAction(id, action) {
             const app = applications.find(a => a.id === id);
             if (app) {
                 app.status = action;
-                try {
-                    localStorage.setItem('fivem_applications', JSON.stringify(applications));
-                } catch (e) {
-                    console.log('localStorage not available');
-                }
+                localStorage.setItem('fivem_applications', JSON.stringify(applications));
                 sendDiscordNotification(app, action);
                 renderApplications();
             }
         }
 
-        // Render Applications
         function renderApplications() {
             const container = document.getElementById('applications-container');
             const pending = applications.filter(a => a.status === 'pending').length;
@@ -1045,18 +987,11 @@
             document.getElementById('stat-rejected').textContent = rejected;
 
             if (applications.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📋</div>
-                        <p>Ingen ansøgninger endnu</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>Ingen ansøgninger endnu</p></div>';
                 return;
             }
 
-            const sorted = [...applications].sort((a, b) => b.id - a.id);
-            
-            container.innerHTML = sorted.map(app => `
+            container.innerHTML = applications.sort((a, b) => b.id - a.id).map(app => `
                 <div class="application-card">
                     <div class="app-header">
                         <div class="app-info">
@@ -1068,44 +1003,24 @@
                         </span>
                     </div>
                     <div class="app-details">
-                        <div class="detail-item">
-                            <p>Discord</p>
-                            <p>${app.discord}</p>
-                        </div>
-                        <div class="detail-item">
-                            <p>Alder</p>
-                            <p>${app.age} år</p>
-                        </div>
-                        <div class="detail-item">
-                            <p>Job</p>
-                            <p>${app.job}</p>
-                        </div>
+                        <div class="detail-item"><p>Discord</p><p>${app.discord}</p></div>
+                        <div class="detail-item"><p>Alder</p><p>${app.age} år</p></div>
+                        <div class="detail-item"><p>Job</p><p>${app.job}</p></div>
                     </div>
                     <div class="app-text-content">
-                        <div class="text-block">
-                            <p>Erfaring</p>
-                            <div class="text-block-content">${app.experience}</div>
-                        </div>
-                        <div class="text-block">
-                            <p>Hvorfor dette job?</p>
-                            <div class="text-block-content">${app.why}</div>
-                        </div>
+                        <div class="text-block"><p>Erfaring</p><div class="text-block-content">${app.experience}</div></div>
+                        <div class="text-block"><p>Hvorfor dette job?</p><div class="text-block-content">${app.why}</div></div>
                     </div>
                     ${app.status === 'pending' ? `
                         <div class="action-buttons">
-                            <button class="btn-approve" onclick="handleAction(${app.id}, 'approved')">
-                                ✓ Godkend
-                            </button>
-                            <button class="btn-reject" onclick="handleAction(${app.id}, 'rejected')">
-                                ✗ Afvis
-                            </button>
+                            <button class="btn-approve" onclick="handleAction(${app.id}, 'approved')">✓ Godkend</button>
+                            <button class="btn-reject" onclick="handleAction(${app.id}, 'rejected')">✗ Afvis</button>
                         </div>
                     ` : ''}
                 </div>
             `).join('');
         }
 
-        // Initialize
         renderApplications();
     </script>
 </body>
