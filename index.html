@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #030305 0%, #9c9c9c 50%, #560b0b 100%);
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a0d0d 50%, #2d0808 100%);
             color: #fff;
             min-height: 100vh;
         }
@@ -24,14 +24,22 @@
             padding: 0 20px;
         }
 
+        .logo-img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(255, 59, 59, 0.5));
+        }
+
         header {
-            background: rgba(30, 30, 46, 0.95);
-            border-bottom: 2px solid #2563eb;
+            background: rgba(10, 10, 15, 0.95);
+            border-bottom: 3px solid #ff3b3b;
             padding: 20px 0;
             position: sticky;
             top: 0;
             z-index: 100;
             backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(255, 59, 59, 0.3);
         }
 
         .header-content {
@@ -51,13 +59,14 @@
         .logo-icon {
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background: linear-gradient(135deg, #ff3b3b, #cc0000);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             font-weight: bold;
+            box-shadow: 0 0 20px rgba(255, 59, 59, 0.5);
         }
 
         .logo-text h1 {
@@ -97,8 +106,9 @@
         }
 
         .nav-btn.active {
-            background: #2563eb;
+            background: linear-gradient(135deg, #ff3b3b, #cc0000);
             color: #fff;
+            box-shadow: 0 0 15px rgba(255, 59, 59, 0.4);
         }
 
         .admin-toggle {
@@ -140,11 +150,12 @@
 
         .hero h2 {
             font-size: 48px;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            background: linear-gradient(135deg, #ff3b3b, #ff6b6b, #ff3b3b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(255, 59, 59, 0.3);
         }
 
         .hero p {
@@ -162,16 +173,17 @@
         }
 
         .feature-card {
-            background: rgba(30, 30, 46, 0.8);
-            border: 2px solid #374151;
+            background: rgba(10, 10, 15, 0.8);
+            border: 2px solid #2a2a2f;
             border-radius: 15px;
             padding: 30px;
             transition: all 0.3s;
         }
 
         .feature-card:hover {
-            border-color: #2563eb;
+            border-color: #ff3b3b;
             transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 59, 59, 0.2);
         }
 
         .feature-icon {
@@ -196,10 +208,11 @@
         }
 
         .cta {
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background: linear-gradient(135deg, #ff3b3b, #cc0000);
             border-radius: 15px;
             padding: 50px;
             text-align: center;
+            box-shadow: 0 10px 40px rgba(255, 59, 59, 0.3);
         }
 
         .cta h3 {
@@ -231,7 +244,7 @@
 
         .btn-primary {
             background: #fff;
-            color: #2563eb;
+            color: #ff3b3b;
         }
 
         .btn-primary:hover {
@@ -263,61 +276,131 @@
             color: #9ca3af;
         }
 
+        .rules-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ff3b3b;
+            background: linear-gradient(135deg, #ff3b3b, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
         .rules-grid {
             display: grid;
             gap: 20px;
-            margin-bottom: 40px;
         }
 
         .rule-card {
-            background: rgba(30, 30, 46, 0.8);
-            border: 2px solid #374151;
+            background: rgba(10, 10, 15, 0.8);
+            border: 2px solid #2a2a2f;
             border-radius: 12px;
             padding: 25px;
-            display: flex;
-            gap: 20px;
             transition: all 0.3s;
         }
 
         .rule-card:hover {
-            border-color: #2563eb;
+            border-color: #ff3b3b;
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(255, 59, 59, 0.2);
+        }
+
+        .rule-header {
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
         .rule-number {
-            width: 40px;
-            height: 40px;
-            background: #2563eb;
-            border-radius: 50%;
+            min-width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff3b3b, #cc0000);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 16px;
             flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(255, 59, 59, 0.4);
         }
 
-        .rule-content h3 {
+        .rule-title {
+            flex: 1;
+        }
+
+        .rule-title h3 {
             font-size: 20px;
             margin-bottom: 8px;
+            color: #ff6b6b;
+        }
+
+        .rule-content {
+            padding-left: 65px;
         }
 
         .rule-content p {
+            color: #d1d5db;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .rule-content ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .rule-content li {
             color: #9ca3af;
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 8px;
             line-height: 1.5;
+        }
+
+        .rule-content li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #ff3b3b;
         }
 
         .warning-box {
             background: rgba(217, 119, 6, 0.1);
             border: 2px solid #d97706;
             border-radius: 12px;
-            padding: 20px;
+            padding: 25px;
             color: #fbbf24;
+            margin-top: 40px;
+        }
+
+        .warning-box strong {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .info-box {
+            background: rgba(255, 59, 59, 0.1);
+            border: 2px solid #ff3b3b;
+            border-radius: 12px;
+            padding: 25px;
+            color: #ff6b6b;
+            margin-bottom: 30px;
         }
 
         .form-container {
             max-width: 700px;
             margin: 0 auto;
-            background: rgba(30, 30, 46, 0.8);
-            border: 2px solid #374151;
+            background: rgba(10, 10, 15, 0.8);
+            border: 2px solid #2a2a2f;
             border-radius: 15px;
             padding: 40px;
         }
@@ -351,7 +434,8 @@
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #2563eb;
+            border-color: #ff3b3b;
+            box-shadow: 0 0 10px rgba(255, 59, 59, 0.3);
         }
 
         .form-group textarea {
@@ -362,7 +446,7 @@
         .submit-btn {
             width: 100%;
             padding: 16px;
-            background: #2563eb;
+            background: linear-gradient(135deg, #ff3b3b, #cc0000);
             color: #fff;
             border: none;
             border-radius: 8px;
@@ -370,11 +454,13 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 59, 59, 0.3);
         }
 
         .submit-btn:hover {
-            background: #1d4ed8;
+            background: linear-gradient(135deg, #cc0000, #990000);
             transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(255, 59, 59, 0.4);
         }
 
         .admin-header {
@@ -404,8 +490,8 @@
         .stat-rejected { background: #ef4444; }
 
         .application-card {
-            background: rgba(30, 30, 46, 0.8);
-            border: 2px solid #374151;
+            background: rgba(10, 10, 15, 0.8);
+            border: 2px solid #2a2a2f;
             border-radius: 12px;
             padding: 25px;
             margin-bottom: 25px;
@@ -514,8 +600,8 @@
         }
 
         .empty-state {
-            background: rgba(30, 30, 46, 0.8);
-            border: 2px solid #374151;
+            background: rgba(10, 10, 15, 0.8);
+            border: 2px solid #2a2a2f;
             border-radius: 12px;
             padding: 60px;
             text-align: center;
@@ -532,8 +618,8 @@
         }
 
         footer {
-            background: rgba(30, 30, 46, 0.95);
-            border-top: 2px solid #374151;
+            background: rgba(10, 10, 15, 0.95);
+            border-top: 2px solid #2a2a2f;
             padding: 30px 0;
             text-align: center;
             color: #9ca3af;
@@ -546,6 +632,8 @@
             .action-buttons { flex-direction: column; }
             nav { width: 100%; }
             .nav-btn { flex: 1; }
+            .rule-content { padding-left: 0; }
+            .rule-header { flex-direction: column; }
         }
     </style>
 </head>
@@ -554,14 +642,15 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <div class="logo-icon">5M</div>
+                    <img src="https://i.imgur.com/YourLogoHere.png" alt="Vernex RP Logo" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="logo-icon" style="display:none;">V</div>
                     <div class="logo-text">
-                        <h1>FiveM Server</h1>
-                        <p>Roleplay Community</p>
+                        <h1>Vernex RP</h1>
+                        <p>Hjemmeside og Info</p>
                     </div>
                 </div>
                 <nav>
-                    <button class="nav-btn active" onclick="showPage('home')">🏠 Hjem</button>
+                    <button class="nav-btn active" onclick="showPage('home')">🏠 Start</button>
                     <button class="nav-btn" onclick="showPage('rules')">📋 Regler</button>
                     <button class="nav-btn" onclick="showPage('apply')">👥 Ansøg</button>
                     <button class="nav-btn admin-nav" style="display:none;" onclick="showPage('admin')">⚙️ Admin</button>
@@ -575,22 +664,22 @@
         <div class="container">
             <div id="home" class="page active">
                 <div class="hero">
-                    <h2>Velkommen til vores FiveM Server</h2>
-                    <p>En seriøs roleplay server med fokus på kvalitet og god stemning</p>
+                    <h2>Velkommen til Vernex RP</h2>
+                    <p>En Esx Baseret server med gode staffs og seriøst RP</p>
                 </div>
                 <div class="features">
                     <div class="feature-card">
-                        <div class="feature-icon" style="background: #2563eb;">👥</div>
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ff3b3b, #cc0000); box-shadow: 0 0 20px rgba(255, 59, 59, 0.4);">👥</div>
                         <h3>Aktiv Community</h3>
                         <p>Vores community er aktiv døgnet rundt med dedikerede spillere og staff.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon" style="background: #7c3aed;">📋</div>
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ff5252, #d32f2f); box-shadow: 0 0 20px rgba(255, 82, 82, 0.4);">📋</div>
                         <h3>Klare Regler</h3>
                         <p>Vi har tydelige regler for at sikre den bedste oplevelse for alle.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon" style="background: #10b981;">⚙️</div>
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ff6b6b, #e53935); box-shadow: 0 0 20px rgba(255, 107, 107, 0.4);">⚙️</div>
                         <h3>Professionelt Staff</h3>
                         <p>Vores staff team er altid klar til at hjælpe og sikre fair spil.</p>
                     </div>
@@ -607,113 +696,288 @@
 
             <div id="rules" class="page">
                 <div class="page-header">
-                    <h2>Server Regler</h2>
-                    <p>Læs og forstå reglerne før du starter</p>
+                    <h2>Vernex RP - Server Regler</h2>
+                    <p>Læs og forstå alle regler før du starter på serveren</p>
                 </div>
-                <div class="rules-grid">
-                    <div class="rule-card">
-                        <div class="rule-number">1</div>
-                        <div class="rule-content">
-                            <h3>Ingen RDM (Random Deathmatch)</h3>
-                            <p>Du må ikke slå nogen ihjel uden en valid rollespils grund.</p>
+
+                <div class="info-box">
+                    <strong>📌 Vigtig Information</strong>
+                    <p>Disse regler er til for at sikre den bedste oplevelse for alle på Vernex RP. Ved ikke at følge reglerne risikerer du at blive udelukket fra serveren. Staff har altid sidste ord i fortolkning af reglerne.</p>
+                </div>
+
+                <div class="rules-section">
+                    <h2 class="section-title">§1 - Generelle Regler</h2>
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§1.1</div>
+                                <div class="rule-title">
+                                    <h3>Respekt og Opførsel</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Du skal altid opføre dig respektfuldt over for andre spillere, både in-game og på Discord.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="rule-card">
-                        <div class="rule-number">2</div>
-                        <div class="rule-content">
-                            <h3>Ingen VDM (Vehicle Deathmatch)</h3>
-                            <p>Du må ikke påkøre folk med vilje uden rollespils grund.</p>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§1.2</div>
+                                <div class="rule-title">
+                                    <h3>Diskrimination</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Racisme, sexisme, homofobi eller andre former for diskrimination tolereres ikke.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="rule-card">
-                        <div class="rule-number">3</div>
-                        <div class="rule-content">
-                            <h3>Respekter andre spillere</h3>
-                            <p>Vær venlig og respektfuld over for alle på serveren.</p>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§1.3</div>
+                                <div class="rule-title">
+                                    <h3>Trusler og Chikane</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Trusler, chikane eller personangreb resulterer i øjeblikkelig ban.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="rule-card">
-                        <div class="rule-number">4</div>
-                        <div class="rule-content">
-                            <h3>Ingen metagaming</h3>
-                            <p>Brug ikke information din karakter ikke skulle vide.</p>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§1.4</div>
+                                <div class="rule-title">
+                                    <h3>Alderskrav</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Du skal være minimum 15 år for at spille på serveren.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="rule-card">
-                        <div class="rule-number">5</div>
-                        <div class="rule-content">
-                            <h3>Ingen powergaming</h3>
-                            <p>Lad andre have mulighed for at reagere på dine handlinger.</p>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§1.5</div>
+                                <div class="rule-title">
+                                    <h3>Hacks og Cheats</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Brug af hacks, cheats, exploits eller andre uretmæssige fordele er strengt forbudt.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="rule-card">
-                        <div class="rule-number">6</div>
-                        <div class="rule-content">
-                            <h3>Fear RP</h3>
-                            <p>Hvis du er truet med et våben, skal du agere som om du er bange.</p>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§1.6</div>
+                                <div class="rule-title">
+                                    <h3>Mikrofon Kvalitet</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Microfonen skal være af god kvalitet - musikafspilning, ekko eller baggrundsstøj er ikke tilladt.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="rule-card">
-                        <div class="rule-number">7</div>
-                        <div class="rule-content">
-                            <h3>New Life Rule</h3>
-                            <p>Når du dør, husker du ikke hvad der skete før din død.</p>
-                        </div>
-                    </div>
-                    <div class="rule-card">
-                        <div class="rule-number">8</div>
-                        <div class="rule-content">
-                            <h3>Følg staff instruktioner</h3>
-                            <p>Respekter og følg altid staff members anvisninger.</p>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§1.7</div>
+                                <div class="rule-title">
+                                    <h3>Sprogkrav</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Du skal kunne tale og forstå dansk på et acceptabelt niveau.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="rules-section">
+                    <h2 class="section-title">§2 - Roleplay Regler</h2>
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§2.1</div>
+                                <div class="rule-title">
+                                    <h3>Random Deathmatch (RDM)</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Det er forbudt at dræbe eller skade andre spillere uden gyldig roleplay-årsag.</p>
+                                <ul>
+                                    <li>Der skal være minimum 5 minutters kvalitets-RP før der må skydes</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§2.2</div>
+                                <div class="rule-title">
+                                    <h3>Vehicle Deathmatch (VDM)</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Det er forbudt at bruge køretøjer som våben til at skade eller dræbe spillere uden roleplay-grund.</p>
+                                <ul>
+                                    <li>Undtagelse: Politiet må bruge rammeteknikker under forfølgelser</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§2.3</div>
+                                <div class="rule-title">
+                                    <h3>FailRP</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Du skal til enhver tid agere realistisk efter din karakter og situation. Spring ikke fra store højder, kør ikke som en gal mand uden grund, etc.</p>
+                            </div>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§2.4</div>
+                                <div class="rule-title">
+                                    <h3>PowerRP</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Du må ikke tvinge andre spillere til handlinger uden at give dem mulighed for at reagere.</p>
+                                <ul>
+                                    <li>Eksempel på PowerRP: "/me tager alle våben fra personen" uden at personen har chance for at handle</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§2.5</div>
+                                <div class="rule-title">
+                                    <h3>Metagaming</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Information fra Discord, streams eller andre eksterne kilder må ikke bruges in-game. Kun information din karakter reelt ved må anvendes.</p>
+                            </div>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§2.6</div>
+                                <div class="rule-title">
+                                    </div>
+                            </div>
+                            <div class="rule-content">
+                                <ul>
+                                    <li>Når du dør, husker du intet fra de sidste 15 minutter før døden</li>
+                                    <li>Du må ikke vende tilbage til dødsstedet i 15 minutter</li>
+                                    <li>Du må ikke hævne din egen død</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§2.7</div>
+                                <div class="rule-title">
+                                    <h3>Combat Logging</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Det er forbudt at logge ud under aktiv roleplay eller kamphandlinger. Vent minimum 10 minutter efter sidste interaktion før du logger ud.</p>
+                            </div>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§2.8</div>
+                                <div class="rule-title">
+                                    <h3>Værdi af Liv (Value of Life)</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <ul>
+                                    <li>Du skal værdsætte dit liv som var det virkeligt</li>
+                                    <li>Gør ikke modstand når der er våben rettet mod dig</li>
+                                    <li>Foretag ikke selvmordsmæssige handlinger</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-header">
+                                <div class="rule-number">§2.9</div>
+                                <div class="rule-title">
+                                    <h3>Fear RP</h3>
+                                </div>
+                            </div>
+                            <div class="rule-content">
+                                <p>Vis frygt når situationen kræver det. Hvis 2+ personer truer dig med våben, skal du adlyde.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="warning-box">
-                    <strong>⚠️ Vigtigt:</strong> Brud på reglerne kan føre til advarsler, kicks eller permanent ban alt efter sværhedsgraden.
+                    <strong>⚠️ Vigtigt at huske:</strong>
+                    <p>Brud på reglerne kan føre til advarsler, kicks eller permanent ban alt efter sværhedsgraden. God RP og velkommen til Vernex RP! 🎮</p>
                 </div>
             </div>
 
             <div id="apply" class="page">
                 <div class="page-header">
                     <h2>Job Ansøgning</h2>
-                    <p>Udfyld formularen for at ansøge om et job</p>
+                    <p>Log ind med Discord for at ansøge om et job</p>
                 </div>
                 <div class="form-container">
-                    <div class="form-group">
-                        <label>Fulde Navn *</label>
-                        <input type="text" id="name" placeholder="Dit fulde navn">
+                    <div id="login-required" style="text-align: center; padding: 40px 0; display: none;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">🔒</div>
+                        <h3 style="margin-bottom: 15px; color: #ff6b6b;">Discord Login Påkrævet</h3>
+                        <p style="color: #9ca3af; margin-bottom: 30px;">Du skal logge ind med Discord for at kunne ansøge om et job. Dette gør det muligt for os at kontakte dig direkte.</p>
+                        <button class="submit-btn" onclick="memberDiscordLogin()">🎮 Log ind med Discord</button>
                     </div>
-                    <div class="form-group">
-                        <label>Discord Tag *</label>
-                        <input type="text" id="discord" placeholder="brugernavn#1234">
+                    <div id="application-form">
+                        <div class="form-group">
+                            <label>Fulde Navn *</label>
+                            <input type="text" id="name" placeholder="Dit fulde navn">
+                        </div>
+                        <div class="form-group">
+                            <label>Discord Tag * <span style="font-size: 12px; color: #10b981;">(Automatisk udfyldt)</span></label>
+                            <input type="text" id="discord" placeholder="brugernavn#1234" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Alder *</label>
+                            <input type="number" id="age" min="15" placeholder="Din alder">
+                        </div>
+                        <div class="form-group">
+                            <label>Hvilket job ansøger du til? *</label>
+                            <select id="job">
+                                <option value="">Vælg et job</option>
+                                <option value="Politi">Politi</option>
+                                <option value="EMS/Læge">EMS/Læge</option>
+                                <option value="Mekaniker">Mekaniker</option>
+                                <option value="Taxi">Taxi</option>
+                                <option value="Ejendomsmægler">Ejendomsmægler</option>
+                                <option value="Advokat">Advokat</option>
+                                <option value="Journalist">Journalist</option>
+                                <option value="Bilforhandler">Bilforhandler</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tidligere Erfaring *</label>
+                            <textarea id="experience" placeholder="Fortæl om din tidligere erfaring med roleplay og FiveM"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Hvorfor vil du have dette job? *</label>
+                            <textarea id="why" placeholder="Beskriv hvorfor du mener du er den rette til jobbet" style="min-height: 120px;"></textarea>
+                        </div>
+                        <button class="submit-btn" onclick="submitApplication()">Send Ansøgning</button>
                     </div>
-                    <div class="form-group">
-                        <label>Alder *</label>
-                        <input type="number" id="age" min="16" placeholder="Din alder">
-                    </div>
-                    <div class="form-group">
-                        <label>Hvilket job ansøger du til? *</label>
-                        <select id="job">
-                            <option value="">Vælg et job</option>
-                            <option value="Politi">Politi</option>
-                            <option value="EMS/Læge">EMS/Læge</option>
-                            <option value="Mekaniker">Mekaniker</option>
-                            <option value="Taxi">Taxi</option>
-                            <option value="Ejendomsmægler">Ejendomsmægler</option>
-                            <option value="Advokat">Advokat</option>
-                            <option value="Journalist">Journalist</option>
-                            <option value="Bilforhandler">Bilforhandler</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Tidligere Erfaring *</label>
-                        <textarea id="experience" placeholder="Fortæl om din tidligere erfaring med roleplay og FiveM"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Hvorfor vil du have dette job? *</label>
-                        <textarea id="why" placeholder="Beskriv hvorfor du mener du er den rette til jobbet" style="min-height: 120px;"></textarea>
-                    </div>
-                    <button class="submit-btn" onclick="submitApplication()">Send Ansøgning</button>
                 </div>
             </div>
 
@@ -733,23 +997,26 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2024 FiveM Server. Alle rettigheder forbeholdes.</p>
+            <p>&copy; 2024 Vernex RP. Alle rettigheder forbeholdes.</p>
         </div>
     </footer>
 
     <script>
-        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1431244475891581058/mKtDS-S-YbEeX6kQyhVfqOPo46492eTV-iMeMdiErMQTH2OtyhRsIZQuGfV4yn7W77wM';
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1447199548614115479/9-lysAENsuabixK6ElD-XSOSNjnJRiah6T7x35XivBumk3J92bw2XHicnX0F6Bb7IvYz';
         const API_URL = 'https://fivem-website-production.up.railway.app';
         
         let isAdmin = false;
         let sessionToken = null;
         let currentUser = null;
+        let memberSession = null;
+        let memberUser = null;
         let applications = JSON.parse(localStorage.getItem('fivem_applications') || '[]');
 
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
             const isAdminParam = urlParams.get('admin');
+            const isMemberParam = urlParams.get('member');
             const error = urlParams.get('error');
             
             if (error) {
@@ -762,19 +1029,29 @@
             }
             
             if (token) {
-                sessionToken = token;
-                try {
-                    localStorage.setItem('discord_session', token);
-                } catch (e) {
-                    console.log('localStorage not available');
-                }
-                
                 if (isAdminParam === 'true') {
+                    sessionToken = token;
+                    try {
+                        localStorage.setItem('discord_session', token);
+                    } catch (e) {
+                        console.log('localStorage not available');
+                    }
                     isAdmin = true;
                     await verifySession();
                     updateAdminUI();
                     alert('✅ Du er nu logget ind som admin!');
                     showPage('admin');
+                } else if (isMemberParam === 'true') {
+                    memberSession = token;
+                    try {
+                        localStorage.setItem('member_session', token);
+                    } catch (e) {
+                        console.log('localStorage not available');
+                    }
+                    await verifyMemberSession();
+                    updateMemberUI();
+                    alert('✅ Du er nu logget ind med Discord!');
+                    showPage('apply');
                 }
                 
                 window.history.replaceState({}, document.title, window.location.pathname);
@@ -785,11 +1062,60 @@
                         sessionToken = savedToken;
                         await verifySession();
                     }
+                    const savedMemberToken = localStorage.getItem('member_session');
+                    if (savedMemberToken) {
+                        memberSession = savedMemberToken;
+                        await verifyMemberSession();
+                    }
                 } catch (e) {
                     console.log('No saved session');
                 }
             }
         });
+        
+        async function verifyMemberSession() {
+            if (!memberSession) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/verify-member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: memberSession })
+                });
+                
+                const data = await response.json();
+                
+                if (data.valid) {
+                    memberUser = data.user;
+                    updateMemberUI();
+                } else {
+                    memberSession = null;
+                    memberUser = null;
+                    try {
+                        localStorage.removeItem('member_session');
+                    } catch (e) {}
+                }
+            } catch (error) {
+                console.error('Member session verification failed:', error);
+            }
+        }
+        
+        function updateMemberUI() {
+            const discordField = document.getElementById('discord');
+            const nameField = document.getElementById('name');
+            
+            if (memberUser) {
+                const discriminator = memberUser.discriminator && memberUser.discriminator !== '0' 
+                    ? `#${memberUser.discriminator}` 
+                    : '';
+                discordField.value = `${memberUser.username}${discriminator}`;
+                discordField.disabled = true;
+                discordField.style.background = 'rgba(17, 24, 39, 0.5)';
+                if (!nameField.value) {
+                    nameField.value = memberUser.username;
+                }
+            }
+        }
         
         async function verifySession() {
             if (!sessionToken) return;
@@ -834,6 +1160,21 @@
             }
         }
 
+        async function memberDiscordLogin() {
+            try {
+                const response = await fetch(`${API_URL}/api/auth/discord-member`);
+                const data = await response.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    alert('❌ Kunne ikke starte Discord login.');
+                }
+            } catch (error) {
+                console.error('Failed to start member OAuth:', error);
+                alert('❌ Kunne ikke forbinde til backend serveren.');
+            }
+        }
+
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -842,13 +1183,27 @@
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => {
                 const text = btn.textContent.toLowerCase();
-                if ((pageId === 'home' && text.includes('hjem')) ||
+                if ((pageId === 'home' && text.includes('start')) ||
                     (pageId === 'rules' && text.includes('regler')) ||
                     (pageId === 'apply' && text.includes('ansøg')) ||
                     (pageId === 'admin' && text.includes('admin'))) {
                     btn.classList.add('active');
                 }
             });
+            
+            if (pageId === 'apply') {
+                const loginRequired = document.getElementById('login-required');
+                const applicationForm = document.getElementById('application-form');
+                
+                if (!memberUser) {
+                    loginRequired.style.display = 'block';
+                    applicationForm.style.display = 'none';
+                } else {
+                    loginRequired.style.display = 'none';
+                    applicationForm.style.display = 'block';
+                    updateMemberUI();
+                }
+            }
             
             if (pageId === 'admin') {
                 if (!isAdmin) {
@@ -899,6 +1254,11 @@
         }
 
         function submitApplication() {
+            if (!memberUser) {
+                alert('Du skal være logget ind med Discord for at ansøge!');
+                return;
+            }
+            
             const name = document.getElementById('name').value.trim();
             const discord = document.getElementById('discord').value.trim();
             const age = document.getElementById('age').value;
@@ -915,14 +1275,15 @@
                 id: Date.now(),
                 name, discord, age, job, experience, why,
                 status: 'pending',
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                discordId: memberUser.id,
+                discordUsername: memberUser.username
             };
 
             applications.push(app);
             localStorage.setItem('fivem_applications', JSON.stringify(applications));
 
             document.getElementById('name').value = '';
-            document.getElementById('discord').value = '';
             document.getElementById('age').value = '';
             document.getElementById('job').value = '';
             document.getElementById('experience').value = '';
@@ -934,9 +1295,19 @@
 
         async function sendDiscordNotification(app, status) {
             if (!DISCORD_WEBHOOK_URL) return;
+            
+            const statusText = status === 'approved' ? '✅ Ansøgning Godkendt' : '❌ Ansøgning Afvist';
+            const color = status === 'approved' ? 3066993 : 15158332;
+            const message = status === 'approved' 
+                ? `Tillykke! Din ansøgning til ${app.job} er blevet godkendt. 🎉` 
+                : `Din ansøgning til ${app.job} er desværre blevet afvist. Du kan prøve igen senere.`;
+            
+            const content = app.discordId ? `<@${app.discordId}> ${message}` : message;
+            
             const embed = {
-                title: status === 'approved' ? '✅ Ansøgning Godkendt' : '❌ Ansøgning Afvist',
-                color: status === 'approved' ? 3066993 : 15158332,
+                title: statusText,
+                color: color,
+                description: message,
                 fields: [
                     { name: 'Navn', value: app.name, inline: true },
                     { name: 'Discord', value: app.discord, inline: true },
@@ -945,13 +1316,19 @@
                 ],
                 timestamp: new Date().toISOString()
             };
+            
             try {
                 await fetch(DISCORD_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ embeds: [embed] })
+                    body: JSON.stringify({ 
+                        content: content,
+                        embeds: [embed] 
+                    })
                 });
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error('Discord notification failed:', e); 
+            }
         }
 
         function handleAction(id, action) {
