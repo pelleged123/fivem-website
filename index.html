@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FiveM Server - Roleplay Community</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(30, 30, 46, 0.95);
+            border-bottom: 2px solid #2563eb;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            margin-bottom: 3px;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn, .admin-toggle {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: #d1d5db;
+        }
+
+        .nav-btn:hover {
+            background: rgba(75, 85, 99, 0.5);
+            color: #fff;
+        }
+
+        .nav-btn.active {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .admin-toggle {
+            background: #374151;
+            color: #fff;
+        }
+
+        .admin-toggle:hover {
+            background: #4b5563;
+        }
+
+        .admin-toggle.active {
+            background: #10b981;
+        }
+
+        /* Main Content */
+        main {
+            padding: 60px 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Home Page */
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #d1d5db;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background: rgba(30, 30, 46, 0.8);
+            border: 2px solid #374151;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: #2563eb;
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .cta {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .cta h3 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: #2563eb;
+        }
+
+        .btn-primary:hover {
+            background: #f3f4f6;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Rules Page */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #9ca3af;
+        }
+
+        .rules-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .rule-card {
+            background: rgba(30, 30, 46, 0.8);
+            border: 2px solid #374151;
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            gap: 20px;
+            transition: all 0.3s;
+        }
+
+        .rule-card:hover {
+            border-color: #2563eb;
+        }
+
+        .rule-number {
+            width: 40px;
+            height: 40px;
+            background: #2563eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .rule-content h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .rule-content p {
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+
+        .warning-box {
+            background: rgba(217, 119, 6, 0.1);
+            border: 2px solid #d97706;
+            border-radius: 12px;
+            padding: 20px;
+            color: #fbbf24;
+        }
+
+        /* Application Form */
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(30, 30, 46, 0.8);
+            border: 2px solid #374151;
+            border-radius: 15px;
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(17, 24, 39, 0.8);
+            border: 2px solid #374151;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+            transform: scale(1.02);
+        }
+
+        /* Admin Panel */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .stat-badge {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stat-pending { background: #d97706; }
+        .stat-approved { background: #10b981; }
+        .stat-rejected { background: #ef4444; }
+
+        .applications-grid {
+            display: grid;
+            gap: 25px;
+        }
+
+        .application-card {
+            background: rgba(30, 30, 46, 0.8);
+            border: 2px solid #374151;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .app-info h3 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .app-date {
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-pending { background: #d97706; }
+        .status-approved { background: #10b981; }
+        .status-rejected { background: #ef4444; }
+
+        .app-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item p:first-child {
+            color: #9ca3af;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .detail-item p:last-child {
+            font-weight: 600;
+        }
+
+        .app-text-content {
+            margin-bottom: 20px;
+        }
+
+        .text-block {
+            margin-bottom: 15px;
+        }
+
+        .text-block p:first-child {
+            color: #9ca3af;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .text-block-content {
+            background: rgba(17, 24, 39, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            color: #d1d5db;
+            line-height: 1.5;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-approve {
+            background: #10b981;
+            color: #fff;
+        }
+
+        .btn-approve:hover {
+            background: #059669;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+
+        .empty-state {
+            background: rgba(30, 30, 46, 0.8);
+            border: 2px solid #374151;
+            border-radius: 12px;
+            padding: 60px;
+            text-align: center;
+        }
+
+        .empty-state .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            color: #9ca3af;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(30, 30, 46, 0.95);
+            border-top: 2px solid #374151;
+            padding: 30px 0;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 32px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .form-container {
+                padding: 25px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            nav {
+                width: 100%;
+            }
+
+            .nav-btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">5M</div>
+                    <div class="logo-text">
+                        <h1>FiveM Server</h1>
+                        <p>Roleplay Community</p>
+                    </div>
+                </div>
+                <nav>
+                    <button class="nav-btn active" onclick="showPage('home')">🏠 Hjem</button>
+                    <button class="nav-btn" onclick="showPage('rules')">📋 Regler</button>
+                    <button class="nav-btn" onclick="showPage('apply')">👥 Ansøg</button>
+                    <button class="nav-btn admin-nav" style="display:none;" onclick="showPage('admin')">⚙️ Admin</button>
+                    <button class="admin-toggle" onclick="toggleAdmin()">🔒 Admin Login</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Home Page -->
+            <div id="home" class="page active">
+                <div class="hero">
+                    <h2>Velkommen til vores FiveM Server</h2>
+                    <p>En seriøs roleplay server med fokus på kvalitet og god stemning</p>
+                </div>
+
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: #2563eb;">👥</div>
+                        <h3>Aktiv Community</h3>
+                        <p>Vores community er aktiv døgnet rundt med dedikerede spillere og staff.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: #7c3aed;">📋</div>
+                        <h3>Klare Regler</h3>
+                        <p>Vi har tydelige regler for at sikre den bedste oplevelse for alle.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: #10b981;">⚙️</div>
+                        <h3>Professionelt Staff</h3>
+                        <p>Vores staff team er altid klar til at hjælpe og sikre fair spil.</p>
+                    </div>
+                </div>
+
+                <div class="cta">
+                    <h3>Klar til at starte?</h3>
+                    <p>Læs vores regler og ansøg om at blive en del af vores community!</p>
+                    <div class="cta-buttons">
+                        <button class="btn btn-primary" onclick="showPage('rules')">Læs Regler</button>
+                        <button class="btn btn-secondary" onclick="showPage('apply')">Ansøg Nu</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rules Page -->
+            <div id="rules" class="page">
+                <div class="page-header">
+                    <h2>Server Regler</h2>
+                    <p>Læs og forstå reglerne før du starter</p>
+                </div>
+
+                <div class="rules-grid">
+                    <div class="rule-card">
+                        <div class="rule-number">1</div>
+                        <div class="rule-content">
+                            <h3>Ingen RDM (Random Deathmatch)</h3>
+                            <p>Du må ikke slå nogen ihjel uden en valid rollespils grund.</p>
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-number">2</div>
+                        <div class="rule-content">
+                            <h3>Ingen VDM (Vehicle Deathmatch)</h3>
+                            <p>Du må ikke påkøre folk med vilje uden rollespils grund.</p>
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-number">3</div>
+                        <div class="rule-content">
+                            <h3>Respekter andre spillere</h3>
+                            <p>Vær venlig og respektfuld over for alle på serveren.</p>
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-number">4</div>
+                        <div class="rule-content">
+                            <h3>Ingen metagaming</h3>
+                            <p>Brug ikke information din karakter ikke skulle vide.</p>
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-number">5</div>
+                        <div class="rule-content">
+                            <h3>Ingen powergaming</h3>
+                            <p>Lad andre have mulighed for at reagere på dine handlinger.</p>
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-number">6</div>
+                        <div class="rule-content">
+                            <h3>Fear RP</h3>
+                            <p>Hvis du er truet med et våben, skal du agere som om du er bange.</p>
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-number">7</div>
+                        <div class="rule-content">
+                            <h3>New Life Rule</h3>
+                            <p>Når du dør, husker du ikke hvad der skete før din død.</p>
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-number">8</div>
+                        <div class="rule-content">
+                            <h3>Følg staff instruktioner</h3>
+                            <p>Respekter og følg altid staff members anvisninger.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Vigtigt:</strong> Brud på reglerne kan føre til advarsler, kicks eller permanent ban alt efter sværhedsgraden.
+                </div>
+            </div>
+
+            <!-- Application Page -->
+            <div id="apply" class="page">
+                <div class="page-header">
+                    <h2>Job Ansøgning</h2>
+                    <p>Udfyld formularen for at ansøge om et job</p>
+                </div>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>Fulde Navn *</label>
+                        <input type="text" id="name" placeholder="Dit fulde navn" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Discord Tag *</label>
+                        <input type="text" id="discord" placeholder="brugernavn#1234" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Alder *</label>
+                        <input type="number" id="age" min="16" placeholder="Din alder" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Hvilket job ansøger du til? *</label>
+                        <select id="job" required>
+                            <option value="">Vælg et job</option>
+                            <option value="Politi">Politi</option>
+                            <option value="EMS/Læge">EMS/Læge</option>
+                            <option value="Mekaniker">Mekaniker</option>
+                            <option value="Taxi">Taxi</option>
+                            <option value="Ejendomsmægler">Ejendomsmægler</option>
+                            <option value="Advokat">Advokat</option>
+                            <option value="Journalist">Journalist</option>
+                            <option value="Bilforhandler">Bilforhandler</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tidligere Erfaring *</label>
+                        <textarea id="experience" placeholder="Fortæl om din tidligere erfaring med roleplay og FiveM" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Hvorfor vil du have dette job? *</label>
+                        <textarea id="why" placeholder="Beskriv hvorfor du mener du er den rette til jobbet" required style="min-height: 120px;"></textarea>
+                    </div>
+                    <button class="submit-btn" onclick="submitApplication()">Send Ansøgning</button>
+                </div>
+            </div>
+
+            <!-- Admin Page -->
+            <div id="admin" class="page">
+                <div class="admin-header">
+                    <h2>Admin Panel</h2>
+                    <div class="stats">
+                        <span class="stat-badge stat-pending">Afventende: <span id="stat-pending">0</span></span>
+                        <span class="stat-badge stat-approved">Godkendt: <span id="stat-approved">0</span></span>
+                        <span class="stat-badge stat-rejected">Afvist: <span id="stat-rejected">0</span></span>
+                    </div>
+                </div>
+                <div id="applications-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 FiveM Server. Alle rettigheder forbeholdes.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Discord Webhook URL - INDSÆT DIN WEBHOOK HER!
+        const DISCORD_WEBHOOK_URL = 'YOUR_DISCORD_WEBHOOK_URL_HERE';
+        
+        // Backend API URL
+        const API_URL = 'http://localhost:3000';
+
+        // State
+        let isAdmin = false;
+        let sessionToken = null;
+        let currentUser = null;
+        let applications = [];
+
+        // Initialize applications from localStorage with error handling
+        try {
+            applications = JSON.parse(localStorage.getItem('fivem_applications') || '[]');
+        } catch (e) {
+            console.log('localStorage not available, using memory storage');
+            applications = [];
+        }
+        
+        // Check for OAuth callback
+        window.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const isAdminParam = urlParams.get('admin');
+            const error = urlParams.get('error');
+            
+            if (error) {
+                alert('❌ Discord login fejlede. Prøv igen.');
+                window.history.replaceState({}, document.title, window.location.pathname);
+                return;
+            }
+            
+            if (token) {
+                sessionToken = token;
+                try {
+                    localStorage.setItem('discord_session', token);
+                } catch (e) {
+                    console.log('localStorage not available');
+                }
+                
+                if (isAdminParam === 'true') {
+                    isAdmin = true;
+                    await verifySession();
+                    updateAdminUI();
+                    alert('✅ Du er nu logget ind som admin!');
+                } else {
+                    alert('❌ Du har ikke admin rettigheder på Discord serveren.');
+                }
+                
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                // Check existing session
+                try {
+                    const savedToken = localStorage.getItem('discord_session');
+                    if (savedToken) {
+                        sessionToken = savedToken;
+                        await verifySession();
+                    }
+                } catch (e) {
+                    console.log('No saved session');
+                }
+            }
+        });
+        
+        // Verify session with backend
+        async function verifySession() {
+            if (!sessionToken) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: sessionToken })
+                });
+                
+                const data = await response.json();
+                
+                if (data.valid && data.isAdmin) {
+                    isAdmin = true;
+                    currentUser = data.user;
+                    updateAdminUI();
+                } else {
+                    isAdmin = false;
+                    sessionToken = null;
+                    try {
+                        localStorage.removeItem('discord_session');
+                    } catch (e) {}
+                }
+            } catch (error) {
+                console.error('Session verification failed:', error);
+            }
+        }
+        
+        // Update admin UI
+        function updateAdminUI() {
+            const adminBtn = document.querySelector('.admin-toggle');
+            const adminNav = document.querySelector('.admin-nav');
+            
+            if (isAdmin && currentUser) {
+                adminBtn.textContent = `🔓 ${currentUser.username}`;
+                adminBtn.classList.add('active');
+                adminNav.style.display = 'block';
+            } else {
+                adminBtn.textContent = '🔒 Admin Login';
+                adminBtn.classList.remove('active');
+                adminNav.style.display = 'none';
+            }
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (pageId === 'admin') {
+                renderApplications();
+            }
+        }
+
+        // Admin Toggle with Discord OAuth
+        async function toggleAdmin() {
+            if (!isAdmin) {
+                // Start Discord OAuth flow
+                try {
+                    const response = await fetch(`${API_URL}/api/auth/discord`);
+                    const data = await response.json();
+                    window.location.href = data.url;
+                } catch (error) {
+                    console.error('Failed to start OAuth:', error);
+                    alert('❌ Kunne ikke starte Discord login. Er backend serveren kørende?');
+                }
+            } else {
+                // Logout
+                try {
+                    await fetch(`${API_URL}/api/logout`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token: sessionToken })
+                    });
+                } catch (error) {
+                    console.error('Logout failed:', error);
+                }
+                
+                isAdmin = false;
+                sessionToken = null;
+                currentUser = null;
+                
+                try {
+                    localStorage.removeItem('discord_session');
+                } catch (e) {}
+                
+                updateAdminUI();
+                showPage('home');
+            }
+        }
+
+        // Submit Application
+        function submitApplication() {
+            const name = document.getElementById('name').value;
+            const discord = document.getElementById('discord').value;
+            const age = document.getElementById('age').value;
+            const job = document.getElementById('job').value;
+            const experience = document.getElementById('experience').value;
+            const why = document.getElementById('why').value;
+
+            if (!name || !discord || !age || !job || !experience || !why) {
+                alert('Udfyld venligst alle felter!');
+                return;
+            }
+
+            const application = {
+                id: Date.now(),
+                name,
+                discord,
+                age,
+                job,
+                experience,
+                why,
+                status: 'pending',
+                timestamp: new Date().toISOString()
+            };
+
+            applications.push(application);
+            try {
+                localStorage.setItem('fivem_applications', JSON.stringify(applications));
+            } catch (e) {
+                console.log('localStorage not available');
+            }
+
+            // Clear form
+            document.getElementById('name').value = '';
+            document.getElementById('discord').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('job').value = '';
+            document.getElementById('experience').value = '';
+            document.getElementById('why').value = '';
+
+            alert('Din ansøgning er sendt! Du vil høre fra os snart.');
+            showPage('home');
+        }
+
+        // Send Discord Notification
+        async function sendDiscordNotification(application, status) {
+            if (DISCORD_WEBHOOK_URL === 'YOUR_DISCORD_WEBHOOK_URL_HERE') {
+                console.log('Discord webhook ikke konfigureret');
+                return;
+            }
+
+            const embed = {
+                title: status === 'approved' ? '✅ Ansøgning Godkendt' : '❌ Ansøgning Afvist',
+                color: status === 'approved' ? 3066993 : 15158332,
+                fields: [
+                    { name: 'Navn', value: application.name, inline: true },
+                    { name: 'Discord', value: application.discord, inline: true },
+                    { name: 'Job', value: application.job, inline: true },
+                    { name: 'Alder', value: application.age.toString(), inline: true },
+                    { name: 'Tidspunkt', value: new Date().toLocaleString('da-DK'), inline: false }
+                ],
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ embeds: [embed] })
+                });
+            } catch (error) {
+                console.error('Fejl ved afsendelse til Discord:', error);
+            }
+        }
+
+        // Handle Application Action
+        function handleAction(id, action) {
+            const app = applications.find(a => a.id === id);
+            if (app) {
+                app.status = action;
+                try {
+                    localStorage.setItem('fivem_applications', JSON.stringify(applications));
+                } catch (e) {
+                    console.log('localStorage not available');
+                }
+                sendDiscordNotification(app, action);
+                renderApplications();
+            }
+        }
+
+        // Render Applications
+        function renderApplications() {
+            const container = document.getElementById('applications-container');
+            const pending = applications.filter(a => a.status === 'pending').length;
+            const approved = applications.filter(a => a.status === 'approved').length;
+            const rejected = applications.filter(a => a.status === 'rejected').length;
+
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-approved').textContent = approved;
+            document.getElementById('stat-rejected').textContent = rejected;
+
+            if (applications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📋</div>
+                        <p>Ingen ansøgninger endnu</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const sorted = [...applications].sort((a, b) => b.id - a.id);
+            
+            container.innerHTML = sorted.map(app => `
+                <div class="application-card">
+                    <div class="app-header">
+                        <div class="app-info">
+                            <h3>${app.name}</h3>
+                            <p class="app-date">${new Date(app.timestamp).toLocaleString('da-DK')}</p>
+                        </div>
+                        <span class="status-badge status-${app.status}">
+                            ${app.status === 'pending' ? 'Afventer' : app.status === 'approved' ? 'Godkendt' : 'Afvist'}
+                        </span>
+                    </div>
+                    <div class="app-details">
+                        <div class="detail-item">
+                            <p>Discord</p>
+                            <p>${app.discord}</p>
+                        </div>
+                        <div class="detail-item">
+                            <p>Alder</p>
+                            <p>${app.age} år</p>
+                        </div>
+                        <div class="detail-item">
+                            <p>Job</p>
+                            <p>${app.job}</p>
+                        </div>
+                    </div>
+                    <div class="app-text-content">
+                        <div class="text-block">
+                            <p>Erfaring</p>
+                            <div class="text-block-content">${app.experience}</div>
+                        </div>
+                        <div class="text-block">
+                            <p>Hvorfor dette job?</p>
+                            <div class="text-block-content">${app.why}</div>
+                        </div>
+                    </div>
+                    ${app.status === 'pending' ? `
+                        <div class="action-buttons">
+                            <button class="btn-approve" onclick="handleAction(${app.id}, 'approved')">
+                                ✓ Godkend
+                            </button>
+                            <button class="btn-reject" onclick="handleAction(${app.id}, 'rejected')">
+                                ✗ Afvis
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Initialize
+        renderApplications();
+    </script>
+</body>
+</html>
