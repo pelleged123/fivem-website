@@ -3,6 +3,10 @@ const fetch = require('node-fetch');
 const cors = require('cors');
 const crypto = require('crypto');
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -131,3 +135,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Backend running on port ${PORT}`);
 });
+
