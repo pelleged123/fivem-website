@@ -1,129 +1,133 @@
 const express = require('express');
-const axios = require('axios');
+const fetch = require('node-fetch');
 const cors = require('cors');
-require('dotenv').config();
+const crypto = require('crypto');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
 app.use(cors());
 app.use(express.json());
 
-const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-const REDIRECT_URI = process.env.REDIRECT_URI || 'http://localhost:3000/callback';
-const GUILD_ID = process.env.DISCORD_GUILD_ID;
-const ADMIN_ROLE_IDS = process.env.ADMIN_ROLE_IDS ? process.env.ADMIN_ROLE_IDS.split(',') : [];
+// Hent fra Railway environment variables
+const DISCORD_CLIENT_ID = '1432421740713345025'; // Dit Client ID fra Discord
+const DISCORD_CLIENT_SECRET = 'QuhbDh5ROWAMKpQDtHvo-OyKa-7ZstfN'; // Dit Client Secret
+const DISCORD_REDIRECT_URI = 'https://fivem-website-production.up.railway.app/';
+const FRONTEND_URL = 'https://vernex12.netlify.app'; // Dit Netlify link
+const REQUIRED_GUILD_ID = '1421237887210623100'; // Dit Discord Server ID
+const ADMIN_ROLE_ID = '1421472998027821137'; // Din Admin Rolle ID
+
+const sessions = new Map();
 
 app.get('/api/auth/discord', (req, res) => {
-    const discordAuthUrl = 'https://discord.com/api/oauth2/authorize?client_id=' + CLIENT_ID + '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) + '&response_type=code&scope=identify%20guilds%20guilds.members.read';
-    res.json({ url: discordAuthUrl });
+    const state = crypto.randomBytes(16).toString('hex');
+    const url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI)}&response_type=code&scope=identify%20guilds%20guilds.members.read&state=${state}`;
+    res.json({ url });
 });
 
-app.get('/callback', async (req, res) => {
-    const code = req.query.code;
-
+app.get('/auth/callback', async (req, res) => {
+    const { code } = req.query;
+    
     if (!code) {
-        return res.redirect('http://localhost:8000?error=no_code');
+        return res.redirect(`${FRONTEND_URL}?error=no_code`);
     }
 
     try {
-        const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', 
-            new URLSearchParams({
-                client_id: CLIENT_ID,
-                client_secret: CLIENT_SECRET,
+        const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                client_id: DISCORD_CLIENT_ID,
+                client_secret: DISCORD_CLIENT_SECRET,
                 grant_type: 'authorization_code',
                 code: code,
-                redirect_uri: REDIRECT_URI,
-            }),
-            {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-            }
-        );
-
-        const access_token = tokenResponse.data.access_token;
-
-        const userResponse = await axios.get('https://discord.com/api/users/@me', {
-            headers: {
-                Authorization: 'Bearer ' + access_token,
-            },
+                redirect_uri: DISCORD_REDIRECT_URI
+            })
         });
 
-        const user = userResponse.data;
-
-        const memberResponse = await axios.get('https://discord.com/api/users/@me/guilds/' + GUILD_ID + '/member', {
-            headers: {
-                Authorization: 'Bearer ' + access_token,
-            },
-        });
-
-        const member = memberResponse.data;
-        const userRoles = member.roles;
-
-        const isAdmin = ADMIN_ROLE_IDS.some(roleId => userRoles.includes(roleId));
-
-        const sessionToken = Buffer.from(user.id + ':' + Date.now()).toString('base64');
-
-        if (!global.sessions) {
-            global.sessions = {};
-        }
+        const tokenData = await tokenResponse.json();
         
-        global.sessions[sessionToken] = {
-            userId: user.id,
-            username: user.username,
-            discriminator: user.discriminator,
-            avatar: user.avatar,
-            isAdmin: isAdmin,
-            roles: userRoles,
-            expires: Date.now() + (24 * 60 * 60 * 1000),
-        };
+        if (!tokenData.access_token) {
+            return res.redirect(`${FRONTEND_URL}?error=no_token`);
+        }
 
-        res.redirect('http://localhost:8000?token=' + sessionToken + '&admin=' + isAdmin);
+        const userResponse = await fetch('https://discord.com/api/users/@me', {
+            headers: { Authorization: `Bearer ${tokenData.access_token}` }
+        });
+        const userData = await userResponse.json();
+
+        const guildsResponse = await fetch('https://discord.com/api/users/@me/guilds', {
+            headers: { Authorization: `Bearer ${tokenData.access_token}` }
+        });
+        const guilds = await guildsResponse.json();
+
+        const inServer = guilds.some(g => g.id === REQUIRED_GUILD_ID);
+        
+        if (!inServer) {
+            return res.redirect(`${FRONTEND_URL}?error=not_in_server`);
+        }
+
+        const memberResponse = await fetch(`https://discord.com/api/users/@me/guilds/${REQUIRED_GUILD_ID}/member`, {
+            headers: { Authorization: `Bearer ${tokenData.access_token}` }
+        });
+        const memberData = await memberResponse.json();
+
+        const hasAdminRole = memberData.roles && memberData.roles.includes(ADMIN_ROLE_ID);
+
+        if (!hasAdminRole) {
+            return res.redirect(`${FRONTEND_URL}?error=no_permission`);
+        }
+
+        const sessionToken = crypto.randomBytes(32).toString('hex');
+        sessions.set(sessionToken, {
+            user: {
+                id: userData.id,
+                username: userData.username,
+                discriminator: userData.discriminator,
+                avatar: userData.avatar
+            },
+            isAdmin: true,
+            createdAt: Date.now()
+        });
+
+        res.redirect(`${FRONTEND_URL}?token=${sessionToken}&admin=true`);
 
     } catch (error) {
-        console.error('OAuth Error:', error.response ? error.response.data : error.message);
-        res.redirect('http://localhost:8000?error=auth_failed');
+        console.error('OAuth error:', error);
+        res.redirect(`${FRONTEND_URL}?error=oauth_failed`);
     }
 });
 
 app.post('/api/verify', (req, res) => {
-    const token = req.body.token;
-
-    if (!token || !global.sessions || !global.sessions[token]) {
+    const { token } = req.body;
+    
+    if (!token || !sessions.has(token)) {
         return res.json({ valid: false, isAdmin: false });
     }
 
-    const session = global.sessions[token];
-
-    if (session.expires < Date.now()) {
-        delete global.sessions[token];
+    const session = sessions.get(token);
+    
+    if (Date.now() - session.createdAt > 24 * 60 * 60 * 1000) {
+        sessions.delete(token);
         return res.json({ valid: false, isAdmin: false });
     }
 
-    res.json({
-        valid: true,
+    res.json({ 
+        valid: true, 
         isAdmin: session.isAdmin,
-        user: {
-            username: session.username,
-            discriminator: session.discriminator,
-            avatar: session.avatar,
-        },
+        user: session.user 
     });
 });
 
 app.post('/api/logout', (req, res) => {
-    const token = req.body.token;
-    
-    if (token && global.sessions && global.sessions[token]) {
-        delete global.sessions[token];
-    }
-    
+    const { token } = req.body;
+    if (token) sessions.delete(token);
     res.json({ success: true });
 });
 
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log('Server running on http://localhost:' + PORT);
-    console.log('Make sure your .env file is configured!');
+    console.log(`Backend running on port ${PORT}`);
 });
