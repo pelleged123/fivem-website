@@ -2,7 +2,9 @@ const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
 const crypto = require('crypto');
-const { Client, GatewayIntentBits, InteractionType } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionFlagsBits } = require('discord.js');
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -12,7 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Hent fra Railway environment variables
+// Environment variables
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const DISCORD_REDIRECT_URI = process.env.DISCORD_REDIRECT_URI;
@@ -21,11 +23,52 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 const REQUIRED_GUILD_ID = process.env.REQUIRED_GUILD_ID;
 const ADMIN_ROLE_ID = process.env.ADMIN_ROLE_ID;
 const MEMBER_ROLE_ID = process.env.MEMBER_ROLE_ID;
-const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN; // NYT!
-const RESULT_WEBHOOK_URL = process.env.RESULT_WEBHOOK_URL; // NYT!
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
+const RESULT_WEBHOOK_URL = process.env.RESULT_WEBHOOK_URL;
 
 const sessions = new Map();
 const memberSessions = new Map();
+
+// ============================================
+// DATABASE SETUP
+// ============================================
+
+const dbPath = path.join(__dirname, 'applications.db');
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+        console.error('❌ Database connection error:', err);
+    } else {
+        console.log('✅ Connected to SQLite database');
+        initDatabase();
+    }
+});
+
+function initDatabase() {
+    db.run(`
+        CREATE TABLE IF NOT EXISTS applications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name_irl TEXT NOT NULL,
+            name_ingame TEXT NOT NULL,
+            discord TEXT NOT NULL,
+            age INTEGER NOT NULL,
+            job TEXT NOT NULL,
+            experience TEXT NOT NULL,
+            why TEXT NOT NULL,
+            dynamic_answers TEXT,
+            status TEXT DEFAULT 'pending',
+            discord_id TEXT,
+            discord_username TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `, (err) => {
+        if (err) {
+            console.error('❌ Error creating table:', err);
+        } else {
+            console.log('✅ Applications table ready');
+        }
+    });
+}
 
 // ============================================
 // DISCORD BOT SETUP
@@ -38,115 +81,175 @@ const client = new Client({
     ]
 });
 
-client.on('ready', () => {
+client.once('ready', async () => {
     console.log(`✅ Discord Bot er online som ${client.user.tag}`);
-});
 
-// Håndter button clicks fra Discord
-client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isButton()) return;
-
-    const [action, appId, discordId] = interaction.customId.split('_');
-    
-    // Tjek om brugeren har administrator rettigheder
-    if (!interaction.member.permissions.has('Administrator')) {
-        await interaction.reply({
-            content: '❌ Du har ikke tilladelse til at håndtere ansøgninger!',
-            ephemeral: true
-        });
-        return;
-    }
-
-    await interaction.deferUpdate();
+    // Registrer slash commands (hurtigt i guild hvis du har REQUIRED_GUILD_ID)
+    const commands = [
+        {
+            name: 'accept',
+            description: 'Godkend en ansøgning (admin only)',
+            options: [
+                { name: 'application_id', type: 4, description: 'ID på ansøgningen', required: true },
+                { name: 'reason', type: 3, description: 'Begrundelse / note', required: false }
+            ]
+        },
+        {
+            name: 'deny',
+            description: 'Afvis en ansøgning (admin only)',
+            options: [
+                { name: 'application_id', type: 4, description: 'ID på ansøgningen', required: true },
+                { name: 'reason', type: 3, description: 'Begrundelse / note', required: false }
+            ]
+        }
+    ];
 
     try {
-        // Hent original besked data
-        const originalEmbed = interaction.message.embeds[0];
-        const applicantName = originalEmbed.fields.find(f => f.name === '👤 Navn IRL')?.value || 'Ukendt';
-        const applicantIngame = originalEmbed.fields.find(f => f.name === '🎮 Navn Ingame')?.value || 'Ukendt';
-        const job = originalEmbed.fields.find(f => f.name === '💼 Job')?.value || 'Ukendt';
-        const discord = originalEmbed.fields.find(f => f.name === '💬 Discord')?.value || 'Ukendt';
-
-        // Opdater original besked
-        const updatedEmbed = {
-            ...originalEmbed.data,
-            color: action === 'approve' ? 3066993 : 15158332, // Grøn eller rød
-            title: action === 'approve' ? '✅ Ansøgning Godkendt' : '❌ Ansøgning Afvist',
-            fields: [
-                ...originalEmbed.fields.map(f => ({ name: f.name, value: f.value, inline: f.inline })),
-                {
-                    name: '👮 Behandlet af',
-                    value: `<@${interaction.user.id}> (${interaction.user.username})`,
-                    inline: false
+        if (REQUIRED_GUILD_ID) {
+            // Vent indtil guild er cached — hvis ikke cached, prøv at fetche
+            let guild = client.guilds.cache.get(REQUIRED_GUILD_ID);
+            if (!guild) {
+                try {
+                    guild = await client.guilds.fetch(REQUIRED_GUILD_ID);
+                } catch (e) {
+                    console.warn('⚠️ Kunne ikke fetch guild - commands registreres globalt som fallback', e);
                 }
-            ],
-            footer: {
-                text: `${originalEmbed.footer?.text || ''} • Behandlet ${new Date().toLocaleString('da-DK')}`
             }
-        };
+            if (guild) {
+                await guild.commands.set(commands);
+                console.log('✅ Guild commands registered for Required Guild');
+            } else {
+                await client.application.commands.set(commands);
+                console.log('⚠️ Guild not available, registered commands globally as fallback');
+            }
+        } else {
+            await client.application.commands.set(commands);
+            console.log('✅ Global commands registered');
+        }
+    } catch (err) {
+        console.error('❌ Kunne ikke registrere commands:', err);
+    }
+});
 
-        await interaction.message.edit({
-            embeds: [updatedEmbed],
-            components: [] // Fjern knapperne
+// Hjælpefunktion til sending til result webhook (kan genbruges)
+async function sendResultToWebhook(appRow, action, moderator, reason) {
+    if (!RESULT_WEBHOOK_URL) return;
+    const statusText = action === 'approved' ? 'godkendt' : 'afvist';
+    const statusEmoji = action === 'approved' ? '✅' : '❌';
+    const color = action === 'approved' ? 3066993 : 15158332;
+    const messageBase = action === 'approved'
+        ? `Tillykke! Din ansøgning til **${appRow.job}** er blevet godkendt. 🎉`
+        : `Din ansøgning til **${appRow.job}** er desværre blevet afvist. Du kan prøve igen senere.`;
+    const message = reason ? `${messageBase}\n\n**Begrundelse:** ${reason}` : messageBase;
+
+    const resultEmbed = {
+        title: `${statusEmoji} Ansøgning ${statusText.charAt(0).toUpperCase() + statusText.slice(1)}`,
+        color,
+        description: message,
+        fields: [
+            { name: '👤 Navn IRL', value: appRow.name_irl || 'Ukendt', inline: true },
+            { name: '🎮 Navn Ingame', value: appRow.name_ingame || 'Ukendt', inline: true },
+            { name: '💬 Discord', value: appRow.discord || 'Ukendt', inline: true },
+            { name: '💼 Job', value: appRow.job || 'Ukendt', inline: true },
+            { name: '👮 Behandlet af', value: `<@${moderator.id}>`, inline: true },
+            { name: '📅 Behandlet', value: new Date().toLocaleString('da-DK'), inline: true }
+        ],
+        footer: { text: `Ansøgnings ID: ${appRow.id}` },
+        timestamp: new Date().toISOString()
+    };
+
+    const content = appRow.discord_id && appRow.discord_id !== 'unknown' ? `<@${appRow.discord_id}> ${messageBase}` : messageBase;
+
+    try {
+        const webhookResponse = await fetch(RESULT_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content, embeds: [resultEmbed] })
         });
+        if (!webhookResponse.ok) {
+            console.error('❌ Kunne ikke sende til result webhook:', await webhookResponse.text());
+        } else {
+            console.log(`✅ Sent result for app ${appRow.id} to result webhook`);
+        }
+    } catch (e) {
+        console.error('❌ Webhook error:', e);
+    }
+}
 
-        // Send resultat til anden kanal
-        if (RESULT_WEBHOOK_URL) {
-            const statusText = action === 'approve' ? 'godkendt' : 'afvist';
-            const statusEmoji = action === 'approve' ? '✅' : '❌';
-            const color = action === 'approve' ? 3066993 : 15158332;
-            const message = action === 'approve' 
-                ? `Tillykke! Din ansøgning til **${job}** er blevet godkendt. 🎉` 
-                : `Din ansøgning til **${job}** er desværre blevet afvist. Du kan prøve igen senere.`;
+// Forenkl og stabiliser interaction handler for slash-commands
+client.on('interactionCreate', async (interaction) => {
+    try {
+        if (!interaction.isChatInputCommand()) return;
 
-            const resultEmbed = {
-                title: `${statusEmoji} Ansøgning ${statusText.charAt(0).toUpperCase() + statusText.slice(1)}`,
-                color: color,
-                description: message,
-                fields: [
-                    { name: '👤 Navn IRL', value: applicantName, inline: true },
-                    { name: '🎮 Navn Ingame', value: applicantIngame, inline: true },
-                    { name: '💬 Discord', value: discord, inline: true },
-                    { name: '💼 Job', value: job, inline: true },
-                    { name: '👮 Behandlet af', value: `<@${interaction.user.id}>`, inline: true },
-                    { name: '📅 Behandlet', value: new Date().toLocaleString('da-DK'), inline: true }
-                ],
-                footer: {
-                    text: `Ansøgnings ID: ${appId}`
-                },
-                timestamp: new Date().toISOString()
-            };
+        const name = interaction.commandName;
+        if (name !== 'accept' && name !== 'deny') return;
 
-            const content = discordId !== 'unknown' ? `<@${discordId}> ${message}` : message;
-
-            await fetch(RESULT_WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    content: content,
-                    embeds: [resultEmbed]
-                })
-            });
-
-            console.log(`✅ Ansøgning ${appId} ${statusText} af ${interaction.user.username}`);
+        // Hent guild medlem for at sikre roles cache er opdateret
+        if (!interaction.guild) {
+            await interaction.reply({ content: '❌ Denne kommando skal bruges i en server (guild).', ephemeral: true });
+            return;
         }
 
-        // Send bekræftelse til admin
-        await interaction.followUp({
-            content: `✅ Ansøgning ${action === 'approve' ? 'godkendt' : 'afvist'} og sendt til resultat-kanalen!`,
-            ephemeral: true
+        let member;
+        try {
+            member = await interaction.guild.members.fetch(interaction.user.id);
+        } catch (e) {
+            console.error('Could not fetch member:', e);
+            await interaction.reply({ content: '❌ Kunne ikke hente brugeren fra serveren.', ephemeral: true });
+            return;
+        }
+
+        if (!ADMIN_ROLE_ID || !member.roles.cache.has(ADMIN_ROLE_ID)) {
+            await interaction.reply({ content: '❌ Du har ikke "ejer team" rollen og kan ikke bruge denne kommando.', ephemeral: true });
+            return;
+        }
+
+        const applicationId = interaction.options.getInteger('application_id', true);
+        const reason = interaction.options.getString('reason', false) || null;
+        const newStatus = name === 'accept' ? 'approved' : 'rejected';
+
+        // Opdater DB
+        db.run('UPDATE applications SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [newStatus, applicationId], function(err) {
+            if (err) {
+                console.error('Database update error (slash command):', err);
+                interaction.reply({ content: '❌ Der opstod en databasefejl.', ephemeral: true }).catch(()=>{});
+                return;
+            }
+
+            if (this.changes === 0) {
+                interaction.reply({ content: `❌ Kunne ikke finde ansøgning med ID ${applicationId}.`, ephemeral: true }).catch(()=>{});
+                return;
+            }
+
+            // Hent opdateret række
+            db.get('SELECT * FROM applications WHERE id = ?', [applicationId], async (err, appRow) => {
+                if (err || !appRow) {
+                    console.error('Could not fetch application after update:', err);
+                    interaction.reply({ content: '❌ Kunne ikke hente ansøgningen fra databasen.', ephemeral: true }).catch(()=>{});
+                    return;
+                }
+
+                // Send resultat til webhook
+                await sendResultToWebhook(appRow, newStatus, interaction.user, reason);
+
+                // Reply admin
+                interaction.reply({ content: `✅ Ansøgning ${newStatus === 'approved' ? 'godkendt' : 'afvist'} (ID: ${applicationId}) og sendt til result kanal.`, ephemeral: true }).catch(()=>{});
+            });
         });
 
     } catch (error) {
-        console.error('Fejl ved håndtering af button click:', error);
-        await interaction.followUp({
-            content: '❌ Der opstod en fejl ved behandling af ansøgningen.',
-            ephemeral: true
-        });
+        console.error('Error handling slash command:', error);
+        try {
+            if (interaction.replied || interaction.deferred) {
+                interaction.followUp({ content: '❌ Der opstod en fejl.', ephemeral: true }).catch(()=>{});
+            } else {
+                interaction.reply({ content: '❌ Der opstod en fejl.', ephemeral: true }).catch(()=>{});
+            }
+        } catch(e) {}
     }
 });
 
-// Log in med Discord Bot
+// Log ind med Discord Bot
 if (DISCORD_BOT_TOKEN) {
     client.login(DISCORD_BOT_TOKEN).catch(err => {
         console.error('❌ Kunne ikke logge ind med Discord Bot:', err);
@@ -156,7 +259,7 @@ if (DISCORD_BOT_TOKEN) {
 }
 
 // ============================================
-// ADMIN ENDPOINTS
+// ADMIN OAUTH ENDPOINTS
 // ============================================
 
 app.get('/api/auth/discord', (req, res) => {
@@ -266,7 +369,7 @@ app.post('/api/logout', (req, res) => {
 });
 
 // ============================================
-// MEMBER ENDPOINTS
+// MEMBER OAUTH ENDPOINTS
 // ============================================
 
 app.get('/api/auth/discord-member', (req, res) => {
@@ -368,17 +471,167 @@ app.post('/api/verify-member', (req, res) => {
 });
 
 // ============================================
+// APPLICATION ENDPOINTS (DATABASE)
+// ============================================
+
+// GET all applications (Admin only)
+app.get('/api/applications', (req, res) => {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    const token = authHeader.substring(7);
+    const session = sessions.get(token);
+    
+    if (!session || !session.isAdmin) {
+        return res.status(403).json({ error: 'Forbidden - Admin only' });
+    }
+    
+    db.all('SELECT * FROM applications ORDER BY created_at DESC', [], (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        
+        // Parse dynamic_answers JSON
+        const applications = rows.map(row => ({
+            ...row,
+            dynamicAnswers: row.dynamic_answers ? JSON.parse(row.dynamic_answers) : null
+        }));
+        
+        res.json({ applications });
+    });
+});
+
+// POST new application (Member only)
+app.post('/api/applications', (req, res) => {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    const token = authHeader.substring(7);
+    const session = memberSessions.get(token);
+    
+    if (!session) {
+        return res.status(403).json({ error: 'Forbidden - Member login required' });
+    }
+    
+    const { nameIrl, nameIngame, discord, age, job, experience, why, discordId, discordUsername, dynamicAnswers } = req.body;
+    
+    if (!nameIrl || !nameIngame || !discord || !age || !job || !experience || !why) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    const dynamicAnswersJson = dynamicAnswers ? JSON.stringify(dynamicAnswers) : null;
+    
+    const sql = `
+        INSERT INTO applications (name_irl, name_ingame, discord, age, job, experience, why, discord_id, discord_username, dynamic_answers, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+    `;
+    
+    db.run(sql, [nameIrl, nameIngame, discord, age, job, experience, why, discordId, discordUsername, dynamicAnswersJson], function(err) {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        
+        res.json({ 
+            success: true, 
+            application: {
+                id: this.lastID,
+                name_irl: nameIrl,
+                name_ingame: nameIngame,
+                discord,
+                age,
+                job,
+                experience,
+                why,
+                discord_id: discordId,
+                discord_username: discordUsername,
+                dynamicAnswers,
+                status: 'pending',
+                created_at: new Date().toISOString()
+            }
+        });
+    });
+});
+
+// PATCH update application status (Admin only)
+app.patch('/api/applications/:id', (req, res) => {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    const token = authHeader.substring(7);
+    const session = sessions.get(token);
+    
+    if (!session || !session.isAdmin) {
+        return res.status(403).json({ error: 'Forbidden - Admin only' });
+    }
+    
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    if (!status || !['approved', 'rejected', 'pending'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid status' });
+    }
+    
+    const sql = `UPDATE applications SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+    
+    db.run(sql, [status, id], function(err) {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'Application not found' });
+        }
+        
+        db.get('SELECT * FROM applications WHERE id = ?', [id], (err, row) => {
+            if (err) {
+                return res.json({ success: true });
+            }
+            res.json({ 
+                success: true, 
+                application: {
+                    ...row,
+                    dynamicAnswers: row.dynamic_answers ? JSON.parse(row.dynamic_answers) : null
+                }
+            });
+        });
+    });
+});
+
+// ============================================
 // HEALTH CHECK
 // ============================================
+
+app.get('/', (req, res) => {
+    res.json({ 
+        status: 'ok',
+        service: 'VernexRP Backend',
+        timestamp: new Date().toISOString(),
+        bot: client.user ? { username: client.user.tag, ready: true } : { ready: false }
+    });
+});
 
 app.get('/health', (req, res) => {
     res.json({ 
         status: 'ok', 
         timestamp: new Date().toISOString(),
         bot: client.user ? { username: client.user.tag, ready: true } : { ready: false },
+        database: 'SQLite',
         endpoints: {
             admin: '/api/auth/discord',
-            member: '/api/auth/discord-member'
+            member: '/api/auth/discord-member',
+            applications: '/api/applications'
         }
     });
 });
@@ -388,5 +641,7 @@ app.listen(PORT, () => {
     console.log(`🚀 Backend running on port ${PORT}`);
     console.log(`✅ Admin OAuth: /api/auth/discord`);
     console.log(`✅ Member OAuth: /api/auth/discord-member`);
+    console.log(`✅ Applications API: /api/applications`);
     console.log(`✅ Discord Bot: ${DISCORD_BOT_TOKEN ? 'Aktiveret' : 'Deaktiveret'}`);
+    console.log(`✅ Database: SQLite`);
 });
