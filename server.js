@@ -19,10 +19,35 @@ const DISCORD_REDIRECT_URI_MEMBER = process.env.DISCORD_REDIRECT_URI_MEMBER;
 const FRONTEND_URL = process.env.FRONTEND_URL;
 const REQUIRED_GUILD_ID = process.env.REQUIRED_GUILD_ID;
 const ADMIN_ROLE_ID = process.env.ADMIN_ROLE_ID;
-const MEMBER_ROLE_ID = process.env.MEMBER_ROLE_ID; // NY: Tilføj denne til dine environment variables
+const MEMBER_ROLE_ID = process.env.MEMBER_ROLE_ID;
 
 const sessions = new Map();
 const memberSessions = new Map();
+const applications = new Map(); // NY: Gem ansøgninger i memory (brug database i produktion!)
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+function isValidAdminSession(token) {
+    if (!token || !sessions.has(token)) return false;
+    const session = sessions.get(token);
+    if (Date.now() - session.createdAt > 24 * 60 * 60 * 1000) {
+        sessions.delete(token);
+        return false;
+    }
+    return session.isAdmin;
+}
+
+function isValidMemberSession(token) {
+    if (!token || !memberSessions.has(token)) return false;
+    const session = memberSessions.get(token);
+    if (Date.now() - session.createdAt > 7 * 24 * 60 * 60 * 1000) {
+        memberSessions.delete(token);
+        return false;
+    }
+    return true;
+}
 
 // ============================================
 // ADMIN ENDPOINTS
@@ -140,7 +165,6 @@ app.post('/api/logout', (req, res) => {
 
 app.get('/api/auth/discord-member', (req, res) => {
     const state = crypto.randomBytes(16).toString('hex');
-    // ÆNDRET: Tilføjet guilds.members.read scope for at kunne læse roller
     const url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI_MEMBER)}&response_type=code&scope=identify%20guilds%20guilds.members.read&state=${state}`;
     res.json({ url });
 });
@@ -187,7 +211,6 @@ app.get('/auth/callback/member', async (req, res) => {
             return res.redirect(`${FRONTEND_URL}?error=not_in_server`);
         }
 
-        // NY: Tjek om brugeren har den krævede member rolle
         const memberResponse = await fetch(`https://discord.com/api/users/@me/guilds/${REQUIRED_GUILD_ID}/member`, {
             headers: { Authorization: `Bearer ${tokenData.access_token}` }
         });
@@ -239,6 +262,122 @@ app.post('/api/verify-member', (req, res) => {
 });
 
 // ============================================
+// APPLICATION ENDPOINTS (NY!)
+// ============================================
+
+// Submit ansøgning (member)
+app.post('/api/applications/submit', (req, res) => {
+    const { token, application } = req.body;
+    
+    if (!isValidMemberSession(token)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const session = memberSessions.get(token);
+    const applicationId = crypto.randomBytes(16).toString('hex');
+    
+    const newApplication = {
+        id: applicationId,
+        userId: session.user.id,
+        username: session.user.username,
+        discriminator: session.user.discriminator,
+        avatar: session.user.avatar,
+        ...application,
+        status: 'pending',
+        submittedAt: Date.now()
+    };
+
+    applications.set(applicationId, newApplication);
+    
+    console.log(`📝 New application from ${session.user.username}: ${applicationId}`);
+    
+    res.json({ 
+        success: true, 
+        applicationId,
+        message: 'Ansøgning indsendt!'
+    });
+});
+
+// Hent alle ansøgninger (admin)
+app.post('/api/applications/list', (req, res) => {
+    const { token } = req.body;
+    
+    if (!isValidAdminSession(token)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const allApplications = Array.from(applications.values())
+        .sort((a, b) => b.submittedAt - a.submittedAt);
+    
+    res.json({ applications: allApplications });
+});
+
+// Opdater ansøgning status (admin)
+app.post('/api/applications/update', (req, res) => {
+    const { token, applicationId, status, adminNote } = req.body;
+    
+    if (!isValidAdminSession(token)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    if (!applications.has(applicationId)) {
+        return res.status(404).json({ error: 'Application not found' });
+    }
+
+    const application = applications.get(applicationId);
+    application.status = status;
+    application.adminNote = adminNote || '';
+    application.reviewedAt = Date.now();
+    
+    const session = sessions.get(token);
+    application.reviewedBy = session.user.username;
+    
+    applications.set(applicationId, application);
+    
+    console.log(`✅ Application ${applicationId} updated to ${status} by ${session.user.username}`);
+    
+    res.json({ 
+        success: true, 
+        application 
+    });
+});
+
+// Hent mine ansøgninger (member)
+app.post('/api/applications/my-applications', (req, res) => {
+    const { token } = req.body;
+    
+    if (!isValidMemberSession(token)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const session = memberSessions.get(token);
+    const myApplications = Array.from(applications.values())
+        .filter(app => app.userId === session.user.id)
+        .sort((a, b) => b.submittedAt - a.submittedAt);
+    
+    res.json({ applications: myApplications });
+});
+
+// Slet ansøgning (admin)
+app.post('/api/applications/delete', (req, res) => {
+    const { token, applicationId } = req.body;
+    
+    if (!isValidAdminSession(token)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    if (!applications.has(applicationId)) {
+        return res.status(404).json({ error: 'Application not found' });
+    }
+
+    applications.delete(applicationId);
+    
+    console.log(`🗑️ Application ${applicationId} deleted`);
+    
+    res.json({ success: true });
+});
+
+// ============================================
 // HEALTH CHECK
 // ============================================
 
@@ -249,6 +388,11 @@ app.get('/health', (req, res) => {
         endpoints: {
             admin: '/api/auth/discord',
             member: '/api/auth/discord-member'
+        },
+        stats: {
+            activeSessions: sessions.size,
+            activeMemberSessions: memberSessions.size,
+            totalApplications: applications.size
         }
     });
 });
@@ -258,4 +402,5 @@ app.listen(PORT, () => {
     console.log(`🚀 Backend running on port ${PORT}`);
     console.log(`✅ Admin OAuth: /api/auth/discord`);
     console.log(`✅ Member OAuth: /api/auth/discord-member`);
+    console.log(`✅ Application endpoints ready`);
 });
