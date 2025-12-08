@@ -2,7 +2,7 @@ const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
 const crypto = require('crypto');
-const { Client, GatewayIntentBits, PermissionFlagsBits } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
@@ -81,175 +81,133 @@ const client = new Client({
     ]
 });
 
-client.once('ready', async () => {
+client.on('ready', () => {
     console.log(`✅ Discord Bot er online som ${client.user.tag}`);
-
-    // Registrer slash commands (hurtigt i guild hvis du har REQUIRED_GUILD_ID)
-    const commands = [
-        {
-            name: 'accept',
-            description: 'Godkend en ansøgning (admin only)',
-            options: [
-                { name: 'application_id', type: 4, description: 'ID på ansøgningen', required: true },
-                { name: 'reason', type: 3, description: 'Begrundelse / note', required: false }
-            ]
-        },
-        {
-            name: 'deny',
-            description: 'Afvis en ansøgning (admin only)',
-            options: [
-                { name: 'application_id', type: 4, description: 'ID på ansøgningen', required: true },
-                { name: 'reason', type: 3, description: 'Begrundelse / note', required: false }
-            ]
-        }
-    ];
-
-    try {
-        if (REQUIRED_GUILD_ID) {
-            // Vent indtil guild er cached — hvis ikke cached, prøv at fetche
-            let guild = client.guilds.cache.get(REQUIRED_GUILD_ID);
-            if (!guild) {
-                try {
-                    guild = await client.guilds.fetch(REQUIRED_GUILD_ID);
-                } catch (e) {
-                    console.warn('⚠️ Kunne ikke fetch guild - commands registreres globalt som fallback', e);
-                }
-            }
-            if (guild) {
-                await guild.commands.set(commands);
-                console.log('✅ Guild commands registered for Required Guild');
-            } else {
-                await client.application.commands.set(commands);
-                console.log('⚠️ Guild not available, registered commands globally as fallback');
-            }
-        } else {
-            await client.application.commands.set(commands);
-            console.log('✅ Global commands registered');
-        }
-    } catch (err) {
-        console.error('❌ Kunne ikke registrere commands:', err);
-    }
 });
 
-// Hjælpefunktion til sending til result webhook (kan genbruges)
-async function sendResultToWebhook(appRow, action, moderator, reason) {
-    if (!RESULT_WEBHOOK_URL) return;
-    const statusText = action === 'approved' ? 'godkendt' : 'afvist';
-    const statusEmoji = action === 'approved' ? '✅' : '❌';
-    const color = action === 'approved' ? 3066993 : 15158332;
-    const messageBase = action === 'approved'
-        ? `Tillykke! Din ansøgning til **${appRow.job}** er blevet godkendt. 🎉`
-        : `Din ansøgning til **${appRow.job}** er desværre blevet afvist. Du kan prøve igen senere.`;
-    const message = reason ? `${messageBase}\n\n**Begrundelse:** ${reason}` : messageBase;
-
-    const resultEmbed = {
-        title: `${statusEmoji} Ansøgning ${statusText.charAt(0).toUpperCase() + statusText.slice(1)}`,
-        color,
-        description: message,
-        fields: [
-            { name: '👤 Navn IRL', value: appRow.name_irl || 'Ukendt', inline: true },
-            { name: '🎮 Navn Ingame', value: appRow.name_ingame || 'Ukendt', inline: true },
-            { name: '💬 Discord', value: appRow.discord || 'Ukendt', inline: true },
-            { name: '💼 Job', value: appRow.job || 'Ukendt', inline: true },
-            { name: '👮 Behandlet af', value: `<@${moderator.id}>`, inline: true },
-            { name: '📅 Behandlet', value: new Date().toLocaleString('da-DK'), inline: true }
-        ],
-        footer: { text: `Ansøgnings ID: ${appRow.id}` },
-        timestamp: new Date().toISOString()
-    };
-
-    const content = appRow.discord_id && appRow.discord_id !== 'unknown' ? `<@${appRow.discord_id}> ${messageBase}` : messageBase;
-
-    try {
-        const webhookResponse = await fetch(RESULT_WEBHOOK_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content, embeds: [resultEmbed] })
-        });
-        if (!webhookResponse.ok) {
-            console.error('❌ Kunne ikke sende til result webhook:', await webhookResponse.text());
-        } else {
-            console.log(`✅ Sent result for app ${appRow.id} to result webhook`);
-        }
-    } catch (e) {
-        console.error('❌ Webhook error:', e);
-    }
-}
-
-// Forenkl og stabiliser interaction handler for slash-commands
+// Håndter button clicks fra Discord
 client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isButton()) return;
+
+    const [action, appId, discordId] = interaction.customId.split('_');
+    
+    // Tjek om brugeren har administrator rettigheder
+    if (!interaction.member.permissions.has('Administrator')) {
+        await interaction.reply({
+            content: '❌ Du har ikke tilladelse til at håndtere ansøgninger!',
+            ephemeral: true
+        });
+        return;
+    }
+
+    await interaction.deferUpdate();
+
     try {
-        if (!interaction.isChatInputCommand()) return;
-
-        const name = interaction.commandName;
-        if (name !== 'accept' && name !== 'deny') return;
-
-        // Hent guild medlem for at sikre roles cache er opdateret
-        if (!interaction.guild) {
-            await interaction.reply({ content: '❌ Denne kommando skal bruges i en server (guild).', ephemeral: true });
-            return;
-        }
-
-        let member;
-        try {
-            member = await interaction.guild.members.fetch(interaction.user.id);
-        } catch (e) {
-            console.error('Could not fetch member:', e);
-            await interaction.reply({ content: '❌ Kunne ikke hente brugeren fra serveren.', ephemeral: true });
-            return;
-        }
-
-        if (!ADMIN_ROLE_ID || !member.roles.cache.has(ADMIN_ROLE_ID)) {
-            await interaction.reply({ content: '❌ Du har ikke "ejer team" rollen og kan ikke bruge denne kommando.', ephemeral: true });
-            return;
-        }
-
-        const applicationId = interaction.options.getInteger('application_id', true);
-        const reason = interaction.options.getString('reason', false) || null;
-        const newStatus = name === 'accept' ? 'approved' : 'rejected';
-
-        // Opdater DB
-        db.run('UPDATE applications SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [newStatus, applicationId], function(err) {
-            if (err) {
-                console.error('Database update error (slash command):', err);
-                interaction.reply({ content: '❌ Der opstod en databasefejl.', ephemeral: true }).catch(()=>{});
-                return;
-            }
-
-            if (this.changes === 0) {
-                interaction.reply({ content: `❌ Kunne ikke finde ansøgning med ID ${applicationId}.`, ephemeral: true }).catch(()=>{});
-                return;
-            }
-
-            // Hent opdateret række
-            db.get('SELECT * FROM applications WHERE id = ?', [applicationId], async (err, appRow) => {
-                if (err || !appRow) {
-                    console.error('Could not fetch application after update:', err);
-                    interaction.reply({ content: '❌ Kunne ikke hente ansøgningen fra databasen.', ephemeral: true }).catch(()=>{});
-                    return;
+        // Opdater status i database
+        const newStatus = action === 'approve' ? 'approved' : 'rejected';
+        
+        db.run(
+            'UPDATE applications SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+            [newStatus, appId],
+            function(err) {
+                if (err) {
+                    console.error('Database update error:', err);
                 }
+            }
+        );
 
-                // Send resultat til webhook
-                await sendResultToWebhook(appRow, newStatus, interaction.user, reason);
+        // Hent application data fra database
+        db.get('SELECT * FROM applications WHERE id = ?', [appId], async (err, app) => {
+            if (err || !app) {
+                console.error('Could not find application:', err);
+                return;
+            }
 
-                // Reply admin
-                interaction.reply({ content: `✅ Ansøgning ${newStatus === 'approved' ? 'godkendt' : 'afvist'} (ID: ${applicationId}) og sendt til result kanal.`, ephemeral: true }).catch(()=>{});
+            // Hent original besked data
+            const originalEmbed = interaction.message.embeds[0];
+
+            // Opdater original besked
+            const updatedEmbed = {
+                ...originalEmbed.data,
+                color: action === 'approve' ? 3066993 : 15158332,
+                title: action === 'approve' ? '✅ Ansøgning Godkendt' : '❌ Ansøgning Afvist',
+                fields: [
+                    ...originalEmbed.fields.map(f => ({ name: f.name, value: f.value, inline: f.inline })),
+                    {
+                        name: '👮 Behandlet af',
+                        value: `<@${interaction.user.id}> (${interaction.user.username})`,
+                        inline: false
+                    }
+                ],
+                footer: {
+                    text: `${originalEmbed.footer?.text || ''} • Behandlet ${new Date().toLocaleString('da-DK')}`
+                }
+            };
+
+            await interaction.message.edit({
+                embeds: [updatedEmbed],
+                components: []
+            });
+
+            // Send resultat til anden kanal
+            if (RESULT_WEBHOOK_URL) {
+                const statusText = action === 'approve' ? 'godkendt' : 'afvist';
+                const statusEmoji = action === 'approve' ? '✅' : '❌';
+                const color = action === 'approve' ? 3066993 : 15158332;
+                const message = action === 'approve' 
+                    ? `Tillykke! Din ansøgning til **${app.job}** er blevet godkendt. 🎉` 
+                    : `Din ansøgning til **${app.job}** er desværre blevet afvist. Du kan prøve igen senere.`;
+
+                const resultEmbed = {
+                    title: `${statusEmoji} Ansøgning ${statusText.charAt(0).toUpperCase() + statusText.slice(1)}`,
+                    color: color,
+                    description: message,
+                    fields: [
+                        { name: '👤 Navn IRL', value: app.name_irl, inline: true },
+                        { name: '🎮 Navn Ingame', value: app.name_ingame, inline: true },
+                        { name: '💬 Discord', value: app.discord, inline: true },
+                        { name: '💼 Job', value: app.job, inline: true },
+                        { name: '👮 Behandlet af', value: `<@${interaction.user.id}>`, inline: true },
+                        { name: '📅 Behandlet', value: new Date().toLocaleString('da-DK'), inline: true }
+                    ],
+                    footer: {
+                        text: `Ansøgnings ID: ${appId}`
+                    },
+                    timestamp: new Date().toISOString()
+                };
+
+                const content = app.discord_id && app.discord_id !== 'unknown' 
+                    ? `<@${app.discord_id}> ${message}` 
+                    : message;
+
+                await fetch(RESULT_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: content,
+                        embeds: [resultEmbed]
+                    })
+                });
+
+                console.log(`✅ Ansøgning ${appId} ${statusText} af ${interaction.user.username}`);
+            }
+
+            await interaction.followUp({
+                content: `✅ Ansøgning ${action === 'approve' ? 'godkendt' : 'afvist'} og gemt i database!`,
+                ephemeral: true
             });
         });
 
     } catch (error) {
-        console.error('Error handling slash command:', error);
-        try {
-            if (interaction.replied || interaction.deferred) {
-                interaction.followUp({ content: '❌ Der opstod en fejl.', ephemeral: true }).catch(()=>{});
-            } else {
-                interaction.reply({ content: '❌ Der opstod en fejl.', ephemeral: true }).catch(()=>{});
-            }
-        } catch(e) {}
+        console.error('Fejl ved håndtering af button click:', error);
+        await interaction.followUp({
+            content: '❌ Der opstod en fejl ved behandling af ansøgningen.',
+            ephemeral: true
+        });
     }
 });
 
-// Log ind med Discord Bot
+// Log in med Discord Bot
 if (DISCORD_BOT_TOKEN) {
     client.login(DISCORD_BOT_TOKEN).catch(err => {
         console.error('❌ Kunne ikke logge ind med Discord Bot:', err);
@@ -420,7 +378,7 @@ app.get('/auth/callback/member', async (req, res) => {
             return res.redirect(`${FRONTEND_URL}?error=not_in_server`);
         }
 
-        const memberResponse = await fetch(`https://discord.com/api/users/@me/guilds/${REQUIRED_GUILD_ID}/member`, {
+        const memberResponse = await fetch(`${API_URL}/api/users/@me/guilds/${REQUIRED_GUILD_ID}/member`, {
             headers: { Authorization: `Bearer ${tokenData.access_token}` }
         });
         const memberData = await memberResponse.json();
@@ -612,15 +570,6 @@ app.patch('/api/applications/:id', (req, res) => {
 // ============================================
 // HEALTH CHECK
 // ============================================
-
-app.get('/', (req, res) => {
-    res.json({ 
-        status: 'ok',
-        service: 'VernexRP Backend',
-        timestamp: new Date().toISOString(),
-        bot: client.user ? { username: client.user.tag, ready: true } : { ready: false }
-    });
-});
 
 app.get('/health', (req, res) => {
     res.json({ 
