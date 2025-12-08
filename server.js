@@ -19,6 +19,7 @@ const DISCORD_REDIRECT_URI_MEMBER = process.env.DISCORD_REDIRECT_URI_MEMBER;
 const FRONTEND_URL = process.env.FRONTEND_URL;
 const REQUIRED_GUILD_ID = process.env.REQUIRED_GUILD_ID;
 const ADMIN_ROLE_ID = process.env.ADMIN_ROLE_ID;
+const MEMBER_ROLE_ID = process.env.MEMBER_ROLE_ID; // NY: Tilføj denne til dine environment variables
 
 const sessions = new Map();
 const memberSessions = new Map();
@@ -139,7 +140,8 @@ app.post('/api/logout', (req, res) => {
 
 app.get('/api/auth/discord-member', (req, res) => {
     const state = crypto.randomBytes(16).toString('hex');
-    const url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI_MEMBER)}&response_type=code&scope=identify%20guilds&state=${state}`;
+    // ÆNDRET: Tilføjet guilds.members.read scope for at kunne læse roller
+    const url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI_MEMBER)}&response_type=code&scope=identify%20guilds%20guilds.members.read&state=${state}`;
     res.json({ url });
 });
 
@@ -183,6 +185,18 @@ app.get('/auth/callback/member', async (req, res) => {
         
         if (!inServer) {
             return res.redirect(`${FRONTEND_URL}?error=not_in_server`);
+        }
+
+        // NY: Tjek om brugeren har den krævede member rolle
+        const memberResponse = await fetch(`https://discord.com/api/users/@me/guilds/${REQUIRED_GUILD_ID}/member`, {
+            headers: { Authorization: `Bearer ${tokenData.access_token}` }
+        });
+        const memberData = await memberResponse.json();
+
+        const hasMemberRole = memberData.roles && memberData.roles.includes(MEMBER_ROLE_ID);
+
+        if (!hasMemberRole) {
+            return res.redirect(`${FRONTEND_URL}?error=no_member_role`);
         }
 
         const sessionToken = crypto.randomBytes(32).toString('hex');
