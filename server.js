@@ -2,6 +2,7 @@ const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
 const crypto = require('crypto');
+const { Client, GatewayIntentBits, InteractionType } = require('discord.js');
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -20,33 +21,138 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 const REQUIRED_GUILD_ID = process.env.REQUIRED_GUILD_ID;
 const ADMIN_ROLE_ID = process.env.ADMIN_ROLE_ID;
 const MEMBER_ROLE_ID = process.env.MEMBER_ROLE_ID;
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN; // NYT!
+const RESULT_WEBHOOK_URL = process.env.RESULT_WEBHOOK_URL; // NYT!
 
 const sessions = new Map();
 const memberSessions = new Map();
-const applications = new Map(); // NY: Gem ansøgninger i memory (brug database i produktion!)
 
 // ============================================
-// HELPER FUNCTIONS
+// DISCORD BOT SETUP
 // ============================================
 
-function isValidAdminSession(token) {
-    if (!token || !sessions.has(token)) return false;
-    const session = sessions.get(token);
-    if (Date.now() - session.createdAt > 24 * 60 * 60 * 1000) {
-        sessions.delete(token);
-        return false;
-    }
-    return session.isAdmin;
-}
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages
+    ]
+});
 
-function isValidMemberSession(token) {
-    if (!token || !memberSessions.has(token)) return false;
-    const session = memberSessions.get(token);
-    if (Date.now() - session.createdAt > 7 * 24 * 60 * 60 * 1000) {
-        memberSessions.delete(token);
-        return false;
+client.on('ready', () => {
+    console.log(`✅ Discord Bot er online som ${client.user.tag}`);
+});
+
+// Håndter button clicks fra Discord
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isButton()) return;
+
+    const [action, appId, discordId] = interaction.customId.split('_');
+    
+    // Tjek om brugeren har administrator rettigheder
+    if (!interaction.member.permissions.has('Administrator')) {
+        await interaction.reply({
+            content: '❌ Du har ikke tilladelse til at håndtere ansøgninger!',
+            ephemeral: true
+        });
+        return;
     }
-    return true;
+
+    await interaction.deferUpdate();
+
+    try {
+        // Hent original besked data
+        const originalEmbed = interaction.message.embeds[0];
+        const applicantName = originalEmbed.fields.find(f => f.name === '👤 Navn IRL')?.value || 'Ukendt';
+        const applicantIngame = originalEmbed.fields.find(f => f.name === '🎮 Navn Ingame')?.value || 'Ukendt';
+        const job = originalEmbed.fields.find(f => f.name === '💼 Job')?.value || 'Ukendt';
+        const discord = originalEmbed.fields.find(f => f.name === '💬 Discord')?.value || 'Ukendt';
+
+        // Opdater original besked
+        const updatedEmbed = {
+            ...originalEmbed.data,
+            color: action === 'approve' ? 3066993 : 15158332, // Grøn eller rød
+            title: action === 'approve' ? '✅ Ansøgning Godkendt' : '❌ Ansøgning Afvist',
+            fields: [
+                ...originalEmbed.fields.map(f => ({ name: f.name, value: f.value, inline: f.inline })),
+                {
+                    name: '👮 Behandlet af',
+                    value: `<@${interaction.user.id}> (${interaction.user.username})`,
+                    inline: false
+                }
+            ],
+            footer: {
+                text: `${originalEmbed.footer?.text || ''} • Behandlet ${new Date().toLocaleString('da-DK')}`
+            }
+        };
+
+        await interaction.message.edit({
+            embeds: [updatedEmbed],
+            components: [] // Fjern knapperne
+        });
+
+        // Send resultat til anden kanal
+        if (RESULT_WEBHOOK_URL) {
+            const statusText = action === 'approve' ? 'godkendt' : 'afvist';
+            const statusEmoji = action === 'approve' ? '✅' : '❌';
+            const color = action === 'approve' ? 3066993 : 15158332;
+            const message = action === 'approve' 
+                ? `Tillykke! Din ansøgning til **${job}** er blevet godkendt. 🎉` 
+                : `Din ansøgning til **${job}** er desværre blevet afvist. Du kan prøve igen senere.`;
+
+            const resultEmbed = {
+                title: `${statusEmoji} Ansøgning ${statusText.charAt(0).toUpperCase() + statusText.slice(1)}`,
+                color: color,
+                description: message,
+                fields: [
+                    { name: '👤 Navn IRL', value: applicantName, inline: true },
+                    { name: '🎮 Navn Ingame', value: applicantIngame, inline: true },
+                    { name: '💬 Discord', value: discord, inline: true },
+                    { name: '💼 Job', value: job, inline: true },
+                    { name: '👮 Behandlet af', value: `<@${interaction.user.id}>`, inline: true },
+                    { name: '📅 Behandlet', value: new Date().toLocaleString('da-DK'), inline: true }
+                ],
+                footer: {
+                    text: `Ansøgnings ID: ${appId}`
+                },
+                timestamp: new Date().toISOString()
+            };
+
+            const content = discordId !== 'unknown' ? `<@${discordId}> ${message}` : message;
+
+            await fetch(RESULT_WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    content: content,
+                    embeds: [resultEmbed]
+                })
+            });
+
+            console.log(`✅ Ansøgning ${appId} ${statusText} af ${interaction.user.username}`);
+        }
+
+        // Send bekræftelse til admin
+        await interaction.followUp({
+            content: `✅ Ansøgning ${action === 'approve' ? 'godkendt' : 'afvist'} og sendt til resultat-kanalen!`,
+            ephemeral: true
+        });
+
+    } catch (error) {
+        console.error('Fejl ved håndtering af button click:', error);
+        await interaction.followUp({
+            content: '❌ Der opstod en fejl ved behandling af ansøgningen.',
+            ephemeral: true
+        });
+    }
+});
+
+// Log in med Discord Bot
+if (DISCORD_BOT_TOKEN) {
+    client.login(DISCORD_BOT_TOKEN).catch(err => {
+        console.error('❌ Kunne ikke logge ind med Discord Bot:', err);
+    });
+} else {
+    console.warn('⚠️ DISCORD_BOT_TOKEN er ikke sat - bot funktionalitet deaktiveret');
 }
 
 // ============================================
@@ -262,122 +368,6 @@ app.post('/api/verify-member', (req, res) => {
 });
 
 // ============================================
-// APPLICATION ENDPOINTS (NY!)
-// ============================================
-
-// Submit ansøgning (member)
-app.post('/api/applications/submit', (req, res) => {
-    const { token, application } = req.body;
-    
-    if (!isValidMemberSession(token)) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const session = memberSessions.get(token);
-    const applicationId = crypto.randomBytes(16).toString('hex');
-    
-    const newApplication = {
-        id: applicationId,
-        userId: session.user.id,
-        username: session.user.username,
-        discriminator: session.user.discriminator,
-        avatar: session.user.avatar,
-        ...application,
-        status: 'pending',
-        submittedAt: Date.now()
-    };
-
-    applications.set(applicationId, newApplication);
-    
-    console.log(`📝 New application from ${session.user.username}: ${applicationId}`);
-    
-    res.json({ 
-        success: true, 
-        applicationId,
-        message: 'Ansøgning indsendt!'
-    });
-});
-
-// Hent alle ansøgninger (admin)
-app.post('/api/applications/list', (req, res) => {
-    const { token } = req.body;
-    
-    if (!isValidAdminSession(token)) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const allApplications = Array.from(applications.values())
-        .sort((a, b) => b.submittedAt - a.submittedAt);
-    
-    res.json({ applications: allApplications });
-});
-
-// Opdater ansøgning status (admin)
-app.post('/api/applications/update', (req, res) => {
-    const { token, applicationId, status, adminNote } = req.body;
-    
-    if (!isValidAdminSession(token)) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    if (!applications.has(applicationId)) {
-        return res.status(404).json({ error: 'Application not found' });
-    }
-
-    const application = applications.get(applicationId);
-    application.status = status;
-    application.adminNote = adminNote || '';
-    application.reviewedAt = Date.now();
-    
-    const session = sessions.get(token);
-    application.reviewedBy = session.user.username;
-    
-    applications.set(applicationId, application);
-    
-    console.log(`✅ Application ${applicationId} updated to ${status} by ${session.user.username}`);
-    
-    res.json({ 
-        success: true, 
-        application 
-    });
-});
-
-// Hent mine ansøgninger (member)
-app.post('/api/applications/my-applications', (req, res) => {
-    const { token } = req.body;
-    
-    if (!isValidMemberSession(token)) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const session = memberSessions.get(token);
-    const myApplications = Array.from(applications.values())
-        .filter(app => app.userId === session.user.id)
-        .sort((a, b) => b.submittedAt - a.submittedAt);
-    
-    res.json({ applications: myApplications });
-});
-
-// Slet ansøgning (admin)
-app.post('/api/applications/delete', (req, res) => {
-    const { token, applicationId } = req.body;
-    
-    if (!isValidAdminSession(token)) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    if (!applications.has(applicationId)) {
-        return res.status(404).json({ error: 'Application not found' });
-    }
-
-    applications.delete(applicationId);
-    
-    console.log(`🗑️ Application ${applicationId} deleted`);
-    
-    res.json({ success: true });
-});
-
-// ============================================
 // HEALTH CHECK
 // ============================================
 
@@ -385,14 +375,10 @@ app.get('/health', (req, res) => {
     res.json({ 
         status: 'ok', 
         timestamp: new Date().toISOString(),
+        bot: client.user ? { username: client.user.tag, ready: true } : { ready: false },
         endpoints: {
             admin: '/api/auth/discord',
             member: '/api/auth/discord-member'
-        },
-        stats: {
-            activeSessions: sessions.size,
-            activeMemberSessions: memberSessions.size,
-            totalApplications: applications.size
         }
     });
 });
@@ -402,5 +388,5 @@ app.listen(PORT, () => {
     console.log(`🚀 Backend running on port ${PORT}`);
     console.log(`✅ Admin OAuth: /api/auth/discord`);
     console.log(`✅ Member OAuth: /api/auth/discord-member`);
-    console.log(`✅ Application endpoints ready`);
+    console.log(`✅ Discord Bot: ${DISCORD_BOT_TOKEN ? 'Aktiveret' : 'Deaktiveret'}`);
 });
