@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a0d0d 50%, #2d0808 100%);
+            background: linear-gradient(135deg, #000000 0%, #000000 50%, #000000 100%);
             color: #fff;
             min-height: 100vh;
         }
@@ -28,18 +28,18 @@
             width: 60px;
             height: 60px;
             object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(255, 59, 59, 0.5));
+            filter: drop-shadow(0 0 10px rgba(248, 139, 139, 0.5));
         }
 
         header {
             background: rgba(10, 10, 15, 0.95);
-            border-bottom: 3px solid #ff3b3b;
+            border-bottom: 3px solid #ffffff;
             padding: 20px 0;
             position: sticky;
             top: 0;
             z-index: 100;
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(255, 59, 59, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .header-content {
@@ -59,14 +59,14 @@
         .logo-icon {
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #ff3b3b, #cc0000);
+            background: linear-gradient(135deg, #000000, #1f0b0b);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             font-weight: bold;
-            box-shadow: 0 0 20px rgba(255, 59, 59, 0.5);
+            box-shadow: 0 0 20px rgba(126, 32, 32, 0.5);
         }
 
         .logo-text h1 {
@@ -106,22 +106,23 @@
         }
 
         .nav-btn.active {
-            background: linear-gradient(135deg, #ff3b3b, #cc0000);
+            background: linear-gradient(135deg, #8b8484, #cdc9c9);
             color: #fff;
-            box-shadow: 0 0 15px rgba(255, 59, 59, 0.4);
+            box-shadow: 0 0 15px rgba(123, 123, 123, 0.4);
         }
 
         .admin-toggle {
-            background: #374151;
+            background: #000000;
             color: #fff;
         }
 
         .admin-toggle:hover {
-            background: #4b5563;
+            background: #000001;
         }
 
         .admin-toggle.active {
-            background: #10b981;
+            background: #ff0404;
+            color: #000000;
         }
 
         main {
@@ -150,12 +151,12 @@
 
         .hero h2 {
             font-size: 48px;
-            background: linear-gradient(135deg, #ff3b3b, #ff6b6b, #ff3b3b);
+            background: linear-gradient(135deg, #ffffff, #ffffff, #080808);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 20px;
-            text-shadow: 0 0 30px rgba(255, 59, 59, 0.3);
+            text-shadow: 0 0 30px rgba(19, 6, 6, 0.3);
         }
 
         .hero p {
@@ -173,16 +174,16 @@
         }
 
         .feature-card {
-            background: rgba(10, 10, 15, 0.8);
-            border: 2px solid #2a2a2f;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #fe0000;
             border-radius: 15px;
             padding: 30px;
             transition: all 0.3s;
         }
 
         .feature-card:hover {
-            border-color: #ff3b3b;
-            transform: translateY(-5px);
+            border-color: #ec7c7c;
+            transform: translateY(-4px);
             box-shadow: 0 10px 30px rgba(255, 59, 59, 0.2);
         }
 
@@ -208,15 +209,15 @@
         }
 
         .cta {
-            background: linear-gradient(135deg, #ff3b3b, #cc0000);
+            background: linear-gradient(135deg, #000000, #160e0e);
             border-radius: 15px;
             padding: 50px;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(255, 59, 59, 0.3);
+            box-shadow: 0 10px 40px rgba(150, 21, 21, 0.351);
         }
 
         .cta h3 {
-            font-size: 32px;
+            font-size: 25px;
             margin-bottom: 15px;
         }
 
@@ -244,7 +245,7 @@
 
         .btn-primary {
             background: #fff;
-            color: #ff3b3b;
+            color: #000000;
         }
 
         .btn-primary:hover {
@@ -253,13 +254,14 @@
         }
 
         .btn-secondary {
-            background: rgba(0, 0, 0, 0.3);
-            color: #fff;
+            background: rgb(255, 255, 255);
+            color: #000000;
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .btn-secondary:hover {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgb(255, 255, 255);
+            transform: scale(1.05);
         }
 
         .page-header {
@@ -284,8 +286,8 @@
             font-size: 28px;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #ff3b3b;
-            background: linear-gradient(135deg, #ff3b3b, #ff6b6b);
+            border-bottom: 2px solid #ffffff;
+            background: linear-gradient(135deg, #ffffff, #f87f7f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -305,9 +307,9 @@
         }
 
         .rule-card:hover {
-            border-color: #ff3b3b;
-            transform: translateX(5px);
-            box-shadow: 0 5px 20px rgba(255, 59, 59, 0.2);
+            border-color: #ffffff;
+            transform: translateX(4px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
 
         .rule-header {
@@ -320,7 +322,7 @@
         .rule-number {
             min-width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #ff3b3b, #cc0000);
+            background: linear-gradient(135deg, #000000, #000000);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -328,7 +330,7 @@
             font-weight: bold;
             font-size: 16px;
             flex-shrink: 0;
-            box-shadow: 0 0 15px rgba(255, 59, 59, 0.4);
+            box-shadow: 0 0 15px rgba(250, 250, 250, 0.4);
         }
 
         .rule-title {
@@ -338,7 +340,7 @@
         .rule-title h3 {
             font-size: 20px;
             margin-bottom: 8px;
-            color: #ff6b6b;
+            color: #ffffff;
         }
 
         .rule-content {
@@ -369,7 +371,7 @@
             content: "→";
             position: absolute;
             left: 0;
-            color: #ff3b3b;
+            color: #000000;
         }
 
         .warning-box {
@@ -388,11 +390,11 @@
         }
 
         .info-box {
-            background: rgba(255, 59, 59, 0.1);
-            border: 2px solid #ff3b3b;
+            background: rgba(255, 59, 59, 0.528);
+            border: 2px solid #ffdada;
             border-radius: 12px;
             padding: 25px;
-            color: #ff6b6b;
+            color: #ffffff;
             margin-bottom: 30px;
         }
 
@@ -459,7 +461,7 @@
 
         .submit-btn:hover {
             background: linear-gradient(135deg, #cc0000, #990000);
-            transform: scale(1.02);
+            transform: scale(1.0);
             box-shadow: 0 6px 20px rgba(255, 59, 59, 0.4);
         }
 
@@ -653,8 +655,8 @@
                     <button class="nav-btn active" onclick="showPage('home')">🏠 Start</button>
                     <button class="nav-btn" onclick="showPage('rules')">📋 Regler</button>
                     <button class="nav-btn" onclick="showPage('apply')">👥 Ansøg</button>
-                    <button class="nav-btn admin-nav" style="display:none;" onclick="showPage('admin')">⚙️ Admin</button>
-                    <button class="admin-toggle" onclick="toggleAdmin()">🔒 Admin Login</button>
+                    <button class="nav-btn admin-nav" style="display:none;" onclick="showPage('admin')">⚙️ ansøgninger</button>
+                    <button class="admin-toggle" onclick="toggleAdmin()">Admin Login</button>
                 </nav>
             </div>
         </div>
@@ -669,22 +671,17 @@
                 </div>
                 <div class="features">
                     <div class="feature-card">
-                        <div class="feature-icon" style="background: linear-gradient(135deg, #ff3b3b, #cc0000); box-shadow: 0 0 20px rgba(255, 59, 59, 0.4);">👥</div>
-                        <h3>Aktiv Community</h3>
-                        <p>Vores community er aktiv døgnet rundt med dedikerede spillere og staff.</p>
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #000000, #000000); box-shadow: 0 0 20px rgba(255, 255, 255, 0.239);">👥</div>
+                        <h3>Support</h3>
+                        <p>Vi har et Aktiv Staff Team hele tiden klar til at hjælpe.</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon" style="background: linear-gradient(135deg, #ff5252, #d32f2f); box-shadow: 0 0 20px rgba(255, 82, 82, 0.4);">📋</div>
-                        <h3>Klare Regler</h3>
-                        <p>Vi har tydelige regler for at sikre den bedste oplevelse for alle.</p>
+                        <div class="feature-card">
+                            <div class="feature-icon" style="background: linear-gradient(135deg, #000000, #000000); box-shadow: 0 0 20px rgba(255, 255, 255, 0.239);">📋</div>
+                            <h3>Regler</h3>
+                            <p>Læs Vores Regler så du undgår ban og advarsler.</p>
+                        </div>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon" style="background: linear-gradient(135deg, #ff6b6b, #e53935); box-shadow: 0 0 20px rgba(255, 107, 107, 0.4);">⚙️</div>
-                        <h3>Professionelt Staff</h3>
-                        <p>Vores staff team er altid klar til at hjælpe og sikre fair spil.</p>
-                    </div>
-                </div>
-                <div class="cta">
+                    <div class="cta">
                     <h3>Klar til at starte?</h3>
                     <p>Læs vores regler og ansøg om at blive en del af vores community!</p>
                     <div class="cta-buttons">
@@ -701,8 +698,8 @@
                 </div>
 
                 <div class="info-box">
-                    <strong>📌 Vigtig Information</strong>
-                    <p>Disse regler er til for at sikre den bedste oplevelse for alle på Vernex RP. Ved ikke at følge reglerne risikerer du at blive udelukket fra serveren. Staff har altid sidste ord i fortolkning af reglerne.</p>
+                    <strong>📌 Vigtigt</strong>
+                    <p>Alle Vores regler er med til at gøre alle for en god Rp oplevelse så der ikke bliver kaos.</p>
                 </div>
 
                 <div class="rules-section">
@@ -788,7 +785,7 @@
                                 </div>
                             </div>
                             <div class="rule-content">
-                                <p>Du skal kunne tale og forstå dansk på et acceptabelt niveau.</p>
+                                <p>Du skal helst kunne tale og forstå dansk man må gerne tale engelsk men der er ikke noget der hedder at man laver en engelsk karakter og kun taler engelsk.</p>
                             </div>
                         </div>
                     </div>
@@ -805,7 +802,7 @@
                                 </div>
                             </div>
                             <div class="rule-content">
-                                <p>Det er forbudt at dræbe eller skade andre spillere uden gyldig roleplay-årsag.</p>
+                                <p>Det er forbudt at dræbe eller skade andre spillere uden gyldig RP-Grund.</p>
                                 <ul>
                                     <li>Der skal være minimum 5 minutters kvalitets-RP før der må skydes</li>
                                 </ul>
@@ -820,7 +817,7 @@
                                 </div>
                             </div>
                             <div class="rule-content">
-                                <p>Det er forbudt at bruge køretøjer som våben til at skade eller dræbe spillere uden roleplay-grund.</p>
+                                <p>Det er forbudt at bruge køretøjer som våben til at skade eller dræbe spillere uden RP-Grund.</p>
                                 <ul>
                                     <li>Undtagelse: Politiet må bruge rammeteknikker under forfølgelser</li>
                                 </ul>
@@ -835,7 +832,7 @@
                                 </div>
                             </div>
                             <div class="rule-content">
-                                <p>Du skal til enhver tid agere realistisk efter din karakter og situation. Spring ikke fra store højder, kør ikke som en gal mand uden grund, etc.</p>
+                                <p>Du må ikke gøre ting som ikke er muligt irl som at hoppe fra en høj byggning og bare gå igen eller køre ind i et træ med 300kmt og køre videre som ingen ting er sket.</p>
                             </div>
                         </div>
 
@@ -862,7 +859,7 @@
                                 </div>
                             </div>
                             <div class="rule-content">
-                                <p>Information fra Discord, streams eller andre eksterne kilder må ikke bruges in-game. Kun information din karakter reelt ved må anvendes.</p>
+                                <p>Information fra Discord, streams eller andre steder må ikke bruges in-game. Kun information din karakter reelt ved må anvendes.</p>
                             </div>
                         </div>
 
@@ -870,9 +867,11 @@
                             <div class="rule-header">
                                 <div class="rule-number">§2.6</div>
                                 <div class="rule-title">
+                                    <h3>NLR(New life Rule)</h3>
                                     </div>
                             </div>
                             <div class="rule-content">
+                                <p>Du kan ikke huske noget fra før du døde
                                 <ul>
                                     <li>Når du dør, husker du intet fra de sidste 15 minutter før døden</li>
                                     <li>Du må ikke vende tilbage til dødsstedet i 15 minutter</li>
@@ -889,7 +888,7 @@
                                 </div>
                             </div>
                             <div class="rule-content">
-                                <p>Det er forbudt at logge ud under aktiv roleplay eller kamphandlinger. Vent minimum 10 minutter efter sidste interaktion før du logger ud.</p>
+                                <p>Det er forbudt at forlade serveren midt i Rp eller hvis prøver at undgå fks røveri osv.</p>
                             </div>
                         </div>
 
@@ -897,29 +896,16 @@
                             <div class="rule-header">
                                 <div class="rule-number">§2.8</div>
                                 <div class="rule-title">
-                                    <h3>Værdi af Liv (Value of Life)</h3>
-                                </div>
-                            </div>
-                            <div class="rule-content">
-                                <ul>
-                                    <li>Du skal værdsætte dit liv som var det virkeligt</li>
-                                    <li>Gør ikke modstand når der er våben rettet mod dig</li>
-                                    <li>Foretag ikke selvmordsmæssige handlinger</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="rule-card">
-                            <div class="rule-header">
-                                <div class="rule-number">§2.9</div>
-                                <div class="rule-title">
                                     <h3>Fear RP</h3>
                                 </div>
                             </div>
                             <div class="rule-content">
-                                <p>Vis frygt når situationen kræver det. Hvis 2+ personer truer dig med våben, skal du adlyde.</p>
+                                <ul>
+                                    <li>Du skal altid forstille dig at det der sker ingame sker irl </li>
+                                    <li>Du skal skal altid overholde dit fear Rp fks du kan ikke bare begynde og slå eller løbe væk hvis der står en og holder gun point på dig.</li>
+                                </ul>
                             </div>
-                        </div>
+                        </div>                       
                     </div>
                 </div>
 
@@ -930,56 +916,65 @@
             </div>
 
             <div id="apply" class="page">
-                <div class="page-header">
-                    <h2>Job Ansøgning</h2>
-                    <p>Log ind med Discord for at ansøge om et job</p>
-                </div>
-                <div class="form-container">
-                    <div id="login-required" style="text-align: center; padding: 40px 0; display: none;">
-                        <div style="font-size: 48px; margin-bottom: 20px;">🔒</div>
-                        <h3 style="margin-bottom: 15px; color: #ff6b6b;">Discord Login Påkrævet</h3>
-                        <p style="color: #9ca3af; margin-bottom: 30px;">Du skal logge ind med Discord for at kunne ansøge om et job. Dette gør det muligt for os at kontakte dig direkte.</p>
-                        <button class="submit-btn" onclick="memberDiscordLogin()">🎮 Log ind med Discord</button>
-                    </div>
-                    <div id="application-form">
-                        <div class="form-group">
-                            <label>Fulde Navn *</label>
-                            <input type="text" id="name" placeholder="Dit fulde navn">
-                        </div>
-                        <div class="form-group">
-                            <label>Discord Tag * <span style="font-size: 12px; color: #10b981;">(Automatisk udfyldt)</span></label>
-                            <input type="text" id="discord" placeholder="brugernavn#1234" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label>Alder *</label>
-                            <input type="number" id="age" min="15" placeholder="Din alder">
-                        </div>
-                        <div class="form-group">
-                            <label>Hvilket job ansøger du til? *</label>
-                            <select id="job">
-                                <option value="">Vælg et job</option>
-                                <option value="Politi">Politi</option>
-                                <option value="EMS/Læge">EMS/Læge</option>
-                                <option value="Mekaniker">Mekaniker</option>
-                                <option value="Taxi">Taxi</option>
-                                <option value="Ejendomsmægler">Ejendomsmægler</option>
-                                <option value="Advokat">Advokat</option>
-                                <option value="Journalist">Journalist</option>
-                                <option value="Bilforhandler">Bilforhandler</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Tidligere Erfaring *</label>
-                            <textarea id="experience" placeholder="Fortæl om din tidligere erfaring med roleplay og FiveM"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Hvorfor vil du have dette job? *</label>
-                            <textarea id="why" placeholder="Beskriv hvorfor du mener du er den rette til jobbet" style="min-height: 120px;"></textarea>
-                        </div>
-                        <button class="submit-btn" onclick="submitApplication()">Send Ansøgning</button>
-                    </div>
-                </div>
+    <div class="page-header">
+        <h2>Job Ansøgning</h2>
+        <p>Log ind med Discord for at ansøge om et job</p>
+    </div>
+    <div class="form-container">
+        <div id="login-required" style="text-align: center; padding: 40px 0; display: none;">
+            <div style="font-size: 48px; margin-bottom: 20px;">🔒</div>
+            <h3 style="margin-bottom: 15px; color: #ff6b6b;">Discord Login Påkrævet</h3>
+            <p style="color: #9ca3af; margin-bottom: 30px;">Du skal logge ind med Discord for at kunne ansøge om et job. Dette gør det muligt for os at kontakte dig direkte.</p>
+            <button class="submit-btn" onclick="memberDiscordLogin()">🎮 Log ind med Discord</button>
+        </div>
+        <div id="application-form">
+            <div class="form-group">
+                <label>Fulde Navn irl *</label>
+                <input type="text" id="name-irl" placeholder="Dit fulde navn">
             </div>
+            <div class="form-group">
+                <label>Fulde Navn ingame *</label>
+                <input type="text" id="name-ingame" placeholder="Dit fulde navn ingame">
+            </div>
+            <div class="form-group">
+                <label>Discord* <span style="font-size: 12px; color: #10b981;">(Automatisk udfyldt)</span></label>
+                <input type="text" id="discord" placeholder="brugernavn#1234" disabled>
+            </div>
+            <div class="form-group">
+                <label>Alder *</label>
+                <input type="number" id="age" min="15" placeholder="Din alder">
+            </div>
+            <div class="form-group">
+                <label>Hvilket job ansøger du til? *</label>
+                <select id="job" onchange="updateDynamicQuestions()">
+                    <option value="">Vælg et job</option>
+                    <option value="Politi">Politi</option>
+                    <option value="EMS/Læge">EMS/Læge</option>
+                    <option value="Mekaniker">Mekaniker</option>
+                    <option value="Staff">Staff</option>
+                    <option value="Ejendomsmægler">Ejendomsmægler</option>
+                    <option value="Advokat">Advokat</option>
+                    <option value="Revisor">Revisor</option>
+                    <option value="Bilforhandler">Bilforhandler</option>
+                    <option value="Bande">Bande</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tidligere Erfaring *</label>
+                <textarea id="experience" placeholder="Fortæl om din tidligere erfaring med roleplay og FiveM"></textarea>
+            </div> 
+            <div class="form-group">
+                <label>Hvorfor vil du have dette job? *</label>
+                <textarea id="why" placeholder="Beskriv hvorfor du mener du er den rette til jobbet" style="min-height: 120px;"></textarea>
+            </div>
+            
+            <!-- NYT: Container til dynamiske spørgsmål -->
+            <div id="dynamic-questions-container"></div>
+            
+            <button class="submit-btn" onclick="submitApplication()">Send Ansøgning</button>
+        </div>
+    </div>
+</div>
 
             <div id="admin" class="page">
                 <div class="admin-header">
@@ -1002,7 +997,7 @@
     </footer>
 
     <script>
-        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1447199548614115479/9-lysAENsuabixK6ElD-XSOSNjnJRiah6T7x35XivBumk3J92bw2XHicnX0F6Bb7IvYz';
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1447609826271301764/-9O078Rw2O06tbM3Z6G5RhoyF_BmvIp5roH43fywlfJgyuqPkHhPYwGwUeBChAcmScCm';
         const API_URL = 'https://fivem-website-production.up.railway.app';
         
         let isAdmin = false;
@@ -1011,6 +1006,126 @@
         let memberSession = null;
         let memberUser = null;
         let applications = JSON.parse(localStorage.getItem('fivem_applications') || '[]');
+const jobQuestions = {
+    'Staff': [
+        {
+            id: 'staff-hours',
+            label: 'Hvor mange timer om ugen kan du dedikere til staff arbejde? *',
+            type: 'number',
+            placeholder: 'Antal timer'
+        },
+        {
+            id: 'staff-experience',
+            label: 'Har du tidligere erfaring som staff/admin på andre servere? *',
+            type: 'textarea',
+            placeholder: 'Beskriv din erfaring'
+        },
+        {
+            id: 'staff-scenario',
+            label: 'Hvordan vil du håndtere en situation hvor to spillere anklager hinanden for RDM? *',
+            type: 'textarea',
+            placeholder: 'Beskriv din tilgang til situationen'
+        }
+    ],
+    'Bande': [
+        {
+            id: 'gang-name',
+            label: 'Hvilket bande navn ønsker du? *',
+            type: 'text',
+            placeholder: 'Bandens navn'
+        },
+        {
+            id: 'gang-members',
+            label: 'Hvor mange medlemmer har du klar til at starte med? *',
+            type: 'number',
+            placeholder: 'Antal medlemmer'
+        },
+        {
+            id: 'gang-backstory',
+            label: 'Beskriv bandens backstory og koncept *',
+            type: 'textarea',
+            placeholder: 'Fortæl om bandens historie, værdier og mål'
+        },
+        {
+            id: 'gang-rp',
+            label: 'Hvordan vil I skabe god RP for andre spillere? *',
+            type: 'textarea',
+            placeholder: 'Beskriv hvordan I vil bidrage til serverens RP'
+        }
+    ],
+    'Politi': [
+        {
+            id: 'police-rank',
+            label: 'Har du erfaring som politi på andre servere? Hvilken rang? *',
+            type: 'text',
+            placeholder: 'F.eks. Betjent, Overbetjent, etc.'
+        },
+        {
+            id: 'police-scenario',
+            label: 'Beskriv hvordan du ville håndtere et gidsel-scenarie *',
+            type: 'textarea',
+            placeholder: 'Din tilgang til forhandling og håndtering'
+        }
+    ],
+    'EMS/Læge': [
+        {
+            id: 'ems-medical',
+            label: 'Har du kendskab til medicinske procedurer eller terminologi? *',
+            type: 'textarea',
+            placeholder: 'Beskriv dit kendskab'
+        },
+        {
+            id: 'ems-stress',
+            label: 'Hvordan håndterer du stressende situationer med mange sårede? *',
+            type: 'textarea',
+            placeholder: 'Beskriv din tilgang'
+        }
+    ]
+};
+
+// Funktion til at opdatere dynamiske spørgsmål
+function updateDynamicQuestions() {
+    const jobSelect = document.getElementById('job');
+    const selectedJob = jobSelect.value;
+    const container = document.getElementById('dynamic-questions-container');
+    
+    // Ryd container
+    container.innerHTML = '';
+    
+    // Hvis der er specifikke spørgsmål til dette job
+    if (jobQuestions[selectedJob]) {
+        const questionsDiv = document.createElement('div');
+        questionsDiv.style.marginTop = '25px';
+        questionsDiv.style.paddingTop = '25px';
+        questionsDiv.style.borderTop = '2px solid #2a2a2f';
+        
+        jobQuestions[selectedJob].forEach(question => {
+            const formGroup = document.createElement('div');
+            formGroup.className = 'form-group';
+            
+            const label = document.createElement('label');
+            label.textContent = question.label;
+            formGroup.appendChild(label);
+            
+            let input;
+            if (question.type === 'textarea') {
+                input = document.createElement('textarea');
+                input.style.minHeight = '100px';
+            } else {
+                input = document.createElement('input');
+                input.type = question.type;
+            }
+            
+            input.id = question.id;
+            input.placeholder = question.placeholder;
+            formGroup.appendChild(input);
+            
+            questionsDiv.appendChild(formGroup);
+        });
+        
+        container.appendChild(questionsDiv);
+    }
+}
 
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1253,140 +1368,302 @@
             }
         }
 
-        function submitApplication() {
-            if (!memberUser) {
-                alert('Du skal være logget ind med Discord for at ansøge!');
-                return;
+        async function submitApplication() {
+    if (!memberUser) {
+        alert('Du skal være logget ind med Discord for at ansøge!');
+        return;
+    }
+    
+    const nameIrl = document.getElementById('name-irl').value.trim();
+    const nameIngame = document.getElementById('name-ingame').value.trim();
+    const discord = document.getElementById('discord').value.trim();
+    const age = document.getElementById('age').value;
+    const job = document.getElementById('job').value;
+    const experience = document.getElementById('experience').value.trim();
+    const why = document.getElementById('why').value.trim();
+
+    if (!nameIrl || !nameIngame || !discord || !age || !job || !experience || !why) {
+        alert('Udfyld venligst alle påkrævede felter!');
+        return;
+    }
+
+    const app = {
+        id: Date.now(),
+        nameIrl,
+        nameIngame,
+        discord,
+        age,
+        job,
+        experience,
+        why,
+        status: 'pending',
+        timestamp: new Date().toISOString(),
+        discordId: memberUser.id,
+        discordUsername: memberUser.username
+    };
+
+    // Tilføj dynamiske spørgsmål hvis de findes
+    const selectedJob = document.getElementById('job').value;
+    if (jobQuestions[selectedJob]) {
+        app.dynamicAnswers = {};
+        jobQuestions[selectedJob].forEach(question => {
+            const element = document.getElementById(question.id);
+            if (element) {
+                app.dynamicAnswers[question.id] = element.value;
+                app.dynamicAnswers[question.id + '_label'] = question.label;
             }
-            
-            const name = document.getElementById('name').value.trim();
-            const discord = document.getElementById('discord').value.trim();
-            const age = document.getElementById('age').value;
-            const job = document.getElementById('job').value;
-            const experience = document.getElementById('experience').value.trim();
-            const why = document.getElementById('why').value.trim();
+        });
+    }
 
-            if (!name || !discord || !age || !job || !experience || !why) {
-                alert('Udfyld venligst alle felter!');
-                return;
-            }
+    // Send ansøgning til Discord
+    await sendApplicationToDiscord(app);
 
-            const app = {
-                id: Date.now(),
-                name, discord, age, job, experience, why,
-                status: 'pending',
-                timestamp: new Date().toISOString(),
-                discordId: memberUser.id,
-                discordUsername: memberUser.username
-            };
+    applications.push(app);
+    localStorage.setItem('fivem_applications', JSON.stringify(applications));
 
-            applications.push(app);
-            localStorage.setItem('fivem_applications', JSON.stringify(applications));
+    // Nulstil formularen
+    document.getElementById('name-irl').value = '';
+    document.getElementById('name-ingame').value = '';
+    document.getElementById('age').value = '';
+    document.getElementById('job').value = '';
+    document.getElementById('experience').value = '';
+    document.getElementById('why').value = '';
+    
+    // Fjern dynamiske spørgsmål
+    document.getElementById('dynamic-questions-container').innerHTML = '';
 
-            document.getElementById('name').value = '';
-            document.getElementById('age').value = '';
-            document.getElementById('job').value = '';
-            document.getElementById('experience').value = '';
-            document.getElementById('why').value = '';
+    alert('✅ Din ansøgning er sendt til Discord! Du vil høre fra os snart.');
+    showPage('home');
+}
 
-            alert('Din ansøgning er sendt! Du vil høre fra os snart.');
-            showPage('home');
-        }
+async function sendApplicationToDiscord(app) {
+    if (!DISCORD_WEBHOOK_URL) {
+        console.log('No webhook URL configured');
+        return;
+    }
 
-        async function sendDiscordNotification(app, status) {
-            if (!DISCORD_WEBHOOK_URL) return;
-            
-            const statusText = status === 'approved' ? '✅ Ansøgning Godkendt' : '❌ Ansøgning Afvist';
-            const color = status === 'approved' ? 3066993 : 15158332;
-            const message = status === 'approved' 
-                ? `Tillykke! Din ansøgning til ${app.job} er blevet godkendt. 🎉` 
-                : `Din ansøgning til ${app.job} er desværre blevet afvist. Du kan prøve igen senere.`;
-            
-            const content = app.discordId ? `<@${app.discordId}> ${message}` : message;
-            
-            const embed = {
-                title: statusText,
-                color: color,
-                description: message,
-                fields: [
-                    { name: 'Navn', value: app.name, inline: true },
-                    { name: 'Discord', value: app.discord, inline: true },
-                    { name: 'Job', value: app.job, inline: true },
-                    { name: 'Alder', value: app.age.toString(), inline: true }
-                ],
-                timestamp: new Date().toISOString()
-            };
-            
-            try {
-                await fetch(DISCORD_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        content: content,
-                        embeds: [embed] 
-                    })
+    // Byg felter til embed
+    const embedFields = [
+        { name: '👤 Navn IRL', value: app.nameIrl, inline: true },
+        { name: '🎮 Navn Ingame', value: app.nameIngame, inline: true },
+        { name: '💬 Discord', value: app.discord, inline: true },
+        { name: '🎂 Alder', value: app.age.toString(), inline: true },
+        { name: '💼 Job', value: app.job, inline: true },
+        { name: '📅 Dato', value: new Date(app.timestamp).toLocaleString('da-DK'), inline: true }
+    ];
+
+    // Tilføj erfaring og motivering
+    if (app.experience) {
+        embedFields.push({
+            name: '📚 Erfaring',
+            value: app.experience.length > 1024 ? app.experience.substring(0, 1021) + '...' : app.experience,
+            inline: false
+        });
+    }
+
+    if (app.why) {
+        embedFields.push({
+            name: '💡 Hvorfor dette job?',
+            value: app.why.length > 1024 ? app.why.substring(0, 1021) + '...' : app.why,
+            inline: false
+        });
+    }
+
+    // Tilføj dynamiske svar hvis de findes
+    if (app.dynamicAnswers) {
+        Object.keys(app.dynamicAnswers).forEach(key => {
+            if (!key.endsWith('_label')) {
+                const label = app.dynamicAnswers[key + '_label'] || key;
+                const value = app.dynamicAnswers[key];
+                embedFields.push({
+                    name: `📝 ${label.replace(' *', '')}`,
+                    value: value.length > 1024 ? value.substring(0, 1021) + '...' : value,
+                    inline: false
                 });
-            } catch (e) { 
-                console.error('Discord notification failed:', e); 
             }
+        });
+    }
+
+    const embed = {
+        title: '📬 Ny Job Ansøgning',
+        color: 16776960, // Gul farve for ny ansøgning
+        fields: embedFields,
+        footer: {
+            text: `Ansøgnings ID: ${app.id}`
+        },
+        timestamp: new Date(app.timestamp).toISOString()
+    };
+
+    const content = app.discordId ? `<@${app.discordId}> har sendt en ny ansøgning til **${app.job}**` : `Ny ansøgning til **${app.job}**`;
+
+    // Tilføj interaktive knapper
+    const components = [
+        {
+            type: 1, // Action Row
+            components: [
+                {
+                    type: 2, // Button
+                    style: 3, // Success (grøn)
+                    label: '✅ Godkend',
+                    custom_id: `approve_${app.id}_${app.discordId || 'unknown'}`
+                },
+                {
+                    type: 2, // Button
+                    style: 4, // Danger (rød)
+                    label: '❌ Afvis',
+                    custom_id: `reject_${app.id}_${app.discordId || 'unknown'}`
+                }
+            ]
         }
+    ];
 
-        function handleAction(id, action) {
-            const app = applications.find(a => a.id === id);
-            if (app) {
-                app.status = action;
-                localStorage.setItem('fivem_applications', JSON.stringify(applications));
-                sendDiscordNotification(app, action);
-                renderApplications();
-            }
+    try {
+        const response = await fetch(DISCORD_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                content: content,
+                embeds: [embed],
+                components: components
+            })
+        });
+
+        if (response.ok) {
+            console.log('Ansøgning sendt til Discord med knapper');
+        } else {
+            console.error('Discord webhook fejl:', response.status, await response.text());
+            alert('⚠️ Ansøgningen blev gemt, men kunne ikke sendes til Discord. Kontakt en admin.');
         }
+    } catch (e) {
+        console.error('Discord webhook error:', e);
+        alert('⚠️ Ansøgningen blev gemt, men kunne ikke sendes til Discord. Kontakt en admin.');
+    }
+}
 
-        function renderApplications() {
-            const container = document.getElementById('applications-container');
-            const pending = applications.filter(a => a.status === 'pending').length;
-            const approved = applications.filter(a => a.status === 'approved').length;
-            const rejected = applications.filter(a => a.status === 'rejected').length;
-
-            document.getElementById('stat-pending').textContent = pending;
-            document.getElementById('stat-approved').textContent = approved;
-            document.getElementById('stat-rejected').textContent = rejected;
-
-            if (applications.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>Ingen ansøgninger endnu</p></div>';
-                return;
-            }
-
-            container.innerHTML = applications.sort((a, b) => b.id - a.id).map(app => `
-                <div class="application-card">
-                    <div class="app-header">
-                        <div class="app-info">
-                            <h3>${app.name}</h3>
-                            <p class="app-date">${new Date(app.timestamp).toLocaleString('da-DK')}</p>
-                        </div>
-                        <span class="status-badge status-${app.status}">
-                            ${app.status === 'pending' ? 'Afventer' : app.status === 'approved' ? 'Godkendt' : 'Afvist'}
-                        </span>
-                    </div>
-                    <div class="app-details">
-                        <div class="detail-item"><p>Discord</p><p>${app.discord}</p></div>
-                        <div class="detail-item"><p>Alder</p><p>${app.age} år</p></div>
-                        <div class="detail-item"><p>Job</p><p>${app.job}</p></div>
-                    </div>
-                    <div class="app-text-content">
-                        <div class="text-block"><p>Erfaring</p><div class="text-block-content">${app.experience}</div></div>
-                        <div class="text-block"><p>Hvorfor dette job?</p><div class="text-block-content">${app.why}</div></div>
-                    </div>
-                    ${app.status === 'pending' ? `
-                        <div class="action-buttons">
-                            <button class="btn-approve" onclick="handleAction(${app.id}, 'approved')">✓ Godkend</button>
-                            <button class="btn-reject" onclick="handleAction(${app.id}, 'rejected')">✗ Afvis</button>
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
+async function sendDiscordNotification(app, status) {
+    if (!DISCORD_WEBHOOK_URL) {
+        console.log('No webhook URL configured');
+        return;
+    }
+    
+    const statusText = status === 'approved' ? '✅ Ansøgning Godkendt' : '❌ Ansøgning Afvist';
+    const color = status === 'approved' ? 3066993 : 15158332;
+    const message = status === 'approved' 
+        ? `Tillykke! Din ansøgning til ${app.job} er blevet godkendt. 🎉` 
+        : `Din ansøgning til ${app.job} er desværre blevet afvist. Du kan prøve igen senere.`;
+    
+    const content = app.discordId ? `<@${app.discordId}> ${message}` : message;
+    
+    const embed = {
+        title: statusText,
+        color: color,
+        description: message,
+        fields: [
+            { name: 'Navn IRL', value: app.nameIrl || app.name || 'N/A', inline: true },
+            { name: 'Navn Ingame', value: app.nameIngame || 'N/A', inline: true },
+            { name: 'Discord', value: app.discord, inline: true },
+            { name: 'Job', value: app.job, inline: true },
+            { name: 'Alder', value: app.age.toString(), inline: true }
+        ],
+        timestamp: new Date().toISOString()
+    };
+    
+    try {
+        const response = await fetch(DISCORD_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                content: content,
+                embeds: [embed] 
+            })
+        });
+        
+        if (response.ok) {
+            console.log('Discord notification sent successfully');
+        } else {
+            console.error('Discord notification failed:', response.status, await response.text());
         }
+    } catch (e) { 
+        console.error('Discord notification error:', e); 
+    }
+}
 
+function handleAction(id, action) {
+    const app = applications.find(a => a.id === id);
+    if (app) {
+        app.status = action;
+        localStorage.setItem('fivem_applications', JSON.stringify(applications));
+        sendDiscordNotification(app, action);
         renderApplications();
+    }
+}
+
+function renderApplications() {
+    const container = document.getElementById('applications-container');
+    const pending = applications.filter(a => a.status === 'pending').length;
+    const approved = applications.filter(a => a.status === 'approved').length;
+    const rejected = applications.filter(a => a.status === 'rejected').length;
+
+    document.getElementById('stat-pending').textContent = pending;
+    document.getElementById('stat-approved').textContent = approved;
+    document.getElementById('stat-rejected').textContent = rejected;
+
+    if (applications.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>Ingen ansøgninger endnu</p></div>';
+        return;
+    }
+
+    container.innerHTML = applications.sort((a, b) => b.id - a.id).map(app => {
+        let dynamicQuestionsHTML = '';
+        
+        // Tilføj dynamiske spørgsmål hvis de findes
+        if (app.dynamicAnswers) {
+            dynamicQuestionsHTML = '<div class="text-block"><p>Job-specifikke svar</p>';
+            Object.keys(app.dynamicAnswers).forEach(key => {
+                if (!key.endsWith('_label')) {
+                    const label = app.dynamicAnswers[key + '_label'] || key;
+                    const value = app.dynamicAnswers[key];
+                    dynamicQuestionsHTML += `<div class="text-block-content" style="margin-bottom: 10px;"><strong>${label}</strong><br>${value}</div>`;
+                }
+            });
+            dynamicQuestionsHTML += '</div>';
+        }
+        
+        return `
+            <div class="application-card">
+                <div class="app-header">
+                    <div class="app-info">
+                        <h3>${app.nameIrl || app.name}</h3>
+                        <p class="app-date">${new Date(app.timestamp).toLocaleString('da-DK')}</p>
+                    </div>
+                    <span class="status-badge status-${app.status}">
+                        ${app.status === 'pending' ? 'Afventer' : app.status === 'approved' ? 'Godkendt' : 'Afvist'}
+                    </span>
+                </div>
+                <div class="app-details">
+                    <div class="detail-item"><p>Navn IRL</p><p>${app.nameIrl || app.name}</p></div>
+                    <div class="detail-item"><p>Navn Ingame</p><p>${app.nameIngame || 'N/A'}</p></div>
+                    <div class="detail-item"><p>Discord</p><p>${app.discord}</p></div>
+                    <div class="detail-item"><p>Alder</p><p>${app.age} år</p></div>
+                    <div class="detail-item"><p>Job</p><p>${app.job}</p></div>
+                </div>
+                <div class="app-text-content">
+                    <div class="text-block"><p>Erfaring</p><div class="text-block-content">${app.experience}</div></div>
+                    <div class="text-block"><p>Hvorfor dette job?</p><div class="text-block-content">${app.why}</div></div>
+                    ${dynamicQuestionsHTML}
+                </div>
+                ${app.status === 'pending' ? `
+                    <div class="action-buttons">
+                        <button class="btn-approve" onclick="handleAction(${app.id}, 'approved')">✓ Godkend</button>
+                        <button class="btn-reject" onclick="handleAction(${app.id}, 'rejected')">✗ Afvis</button>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+renderApplications();
     </script>
 </body>
 </html>
